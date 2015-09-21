@@ -34,11 +34,12 @@ II. Installation
   Don't be afraid if you aren't familiar with C++ and don't want to change the code.
   Unreal automatically compiles the code while opening the project for the first time.
   You can just close Visual Studio and save the changes after starting.
-* Download the template under: https://github.com/Cyx69/TP_ThirdPersonNeuron/releases
-* Unpack the file to your UE4 template folder, for e.g. "C:\Program Files\Unreal Engine\4.9\Templates"
-* Launch Unreal Editor and click on "New project"
-* Under C++ you should now see a template called "TP Neuron"
-* Create a new project with the above template selected
+* Download the template under: "https://github.com/Cyx69/TP_ThirdPersonNeuron/releases".
+* Unpack the file to your UE4 template folder, for e.g. "C:\Program Files\Unreal Engine\4.9\Templates\TP_ThirdPersonNeuron".
+  Make sure that the project files are placed and visible under "...\Templates\TP_ThirdPersonNeuron" after unzip.
+* Launch Unreal Editor and click on "New project".
+* Under C++ you should now see a template called "TP Neuron".
+* Create a new project with the above template selected.
 
 
 III. Configuration
