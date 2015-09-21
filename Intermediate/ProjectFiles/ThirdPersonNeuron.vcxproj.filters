@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\ThirdPersonNeuron.uproject" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{FDB31637-64AF-441F-A2B4-C5A7CAE9D2EF}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\ThirdPersonNeuron.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\Source\ThirdPersonNeuronEditor.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <Filter Include="Config">
+      <UniqueIdentifier>{A0EBC909-2C29-475D-935E-57836D9FF981}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\DefaultEditor.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEditorPerProjectUserSettings.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEngine.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGame.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultInput.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Source\ThirdPersonNeuron">
+      <UniqueIdentifier>{C91A855C-3DF4-4AD7-9E19-6B3CCA60A40A}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\ThirdPersonNeuron\NeuronBPFunctionLibrary.cpp">
+      <Filter>Source\ThirdPersonNeuron</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\ThirdPersonNeuron\NeuronBPFunctionLibrary.h">
+      <Filter>Source\ThirdPersonNeuron</Filter>
+    </ClInclude>
+    <None Include="..\..\Source\ThirdPersonNeuron\ThirdPersonNeuron.Build.cs">
+      <Filter>Source\ThirdPersonNeuron</Filter>
+    </None>
+    <ClCompile Include="..\..\Source\ThirdPersonNeuron\ThirdPersonNeuron.cpp">
+      <Filter>Source\ThirdPersonNeuron</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\ThirdPersonNeuron\ThirdPersonNeuron.h">
+      <Filter>Source\ThirdPersonNeuron</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\ThirdPersonNeuron\ThirdPersonNeuronCharacter.cpp">
+      <Filter>Source\ThirdPersonNeuron</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\ThirdPersonNeuron\ThirdPersonNeuronCharacter.h">
+      <Filter>Source\ThirdPersonNeuron</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\ThirdPersonNeuron\ThirdPersonNeuronGameMode.cpp">
+      <Filter>Source\ThirdPersonNeuron</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\ThirdPersonNeuron\ThirdPersonNeuronGameMode.h">
+      <Filter>Source\ThirdPersonNeuron</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Source\ThirdPersonNeuron\ThirdPersonNeuronController.h">
+      <Filter>Source\ThirdPersonNeuron</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Source\ThirdPersonNeuron\ThirdPersonNeuronController.cpp">
+      <Filter>Source\ThirdPersonNeuron</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
