@@ -35,7 +35,7 @@ bool UNeuronBPFunctionLibrary::NeuronInit(AThirdPersonNeuronController *Controll
 }
 
 // Connect to Axis Neuron
-bool UNeuronBPFunctionLibrary::NeuronConnect(AThirdPersonNeuronController *Controller, FString HostName, int32 Port, bool bReference, bool bDisplacement)
+bool UNeuronBPFunctionLibrary::NeuronConnect(AThirdPersonNeuronController *Controller, FString HostName, int32 Port, bool bReference, bool bDisplacement, ENeuronMotionLineFormatEnum MotionLineFormat)
 {
 	if (Controller == NULL)
 	{
@@ -48,6 +48,10 @@ bool UNeuronBPFunctionLibrary::NeuronConnect(AThirdPersonNeuronController *Contr
 
 	Controller->bReference = bReference;
 	Controller->bDisplacement = bDisplacement;
+	if (MotionLineFormat == ENeuronMotionLineFormatEnum::VE_Neuron)
+		Controller->MotionLineFormat = Neuron;
+	else
+		Controller->MotionLineFormat = Standard;	
 
 	if (Controller->Connect(HostName, Port) != true)
 		return false;
@@ -127,7 +131,7 @@ bool UNeuronBPFunctionLibrary::NeuronReadMotion(AThirdPersonNeuronController *Co
 		float X = Controller->MotionLine[(BoneIndex * FloatsPerBone) + Controller->Skeleton[BoneIndex].XPos] - Controller->Skeleton[BoneIndex].Offset[0];
 		float Y = Controller->MotionLine[(BoneIndex * FloatsPerBone) + Controller->Skeleton[BoneIndex].YPos] - Controller->Skeleton[BoneIndex].Offset[1];
 		float Z = Controller->MotionLine[(BoneIndex * FloatsPerBone) + Controller->Skeleton[BoneIndex].ZPos] - Controller->Skeleton[BoneIndex].Offset[2];
-	
+
 		// Map BVH right hand system to local bone coordinate system
 		switch (SkeletonType)
 		{

@@ -45,61 +45,136 @@ void AThirdPersonNeuronController::Tick(float DeltaTime)
 #define SIZEOFDATA 10000
 			uint8 Data[SIZEOFDATA];
 			int32 BytesRead = 0;
-			bool bMotionlineFound = false;
-			bool bMotionlineEndFound = false;
+			bool bMotionLineBeginFound = false;
+			bool bMotionLineEndFound = false;
 
 			if (ReceiverSocket->Recv(Data, SIZEOFDATA, BytesRead) == true)
 			{
 				int32 i, j, k;
-				for (i = j = k = 0; i < BytesRead - 2; i++)
-				{
-					if ((Data[i] == '0') && (Data[i + 1] == ' ') && ((Data[i + 2] < '0') || (Data[i + 2] > '9') || (Data[i + 2] == '-')))
-					{
-						bMotionlineFound = true;
-						// Skip Avatarname
-						for (j = i + 2; j < BytesRead; j++)
-						{
-							if (Data[j] == ' ')
-								break;
-						}
-						break;
-					}
-				}
 
-				if (bMotionlineFound == true)
+				if (MotionLineFormat == Neuron)
 				{
-					for (k = j; k < BytesRead; k++)
+					// Scan for the beginning of a motion line and synchronize to Avatarname
+					// Neuron BVH output format:
+					// 0 Avatarname 0.00 0.00 ... 0.00 ||
+					for (i = j = k = 0; i < BytesRead - 2; i++)
 					{
-						if (Data[k] == '|')
+						if ((Data[i] == '0') && (Data[i + 1] == ' ') && ((Data[i + 2] < '0') || (Data[i + 2] > '9') || (Data[i + 2] == '-')))
 						{
-							bMotionlineEndFound = true;
+							bMotionLineBeginFound = true;
+							// Skip Avatarname
+							for (j = i + 2; j < BytesRead; j++)
+							{
+								if (Data[j] == ' ')
+									break;
+							}
 							break;
 						}
 					}
-
-					if (bMotionlineEndFound == true)
+					if (bMotionLineBeginFound == true)
 					{
-						int32 f = 0;
-						int32 m = 0;
-						// We have now a motion line captured between j and k
-						for (i = j; f < MAXFLOATS && i < k; f++)
+						// Scan for the end of the motion line
+						for (k = j; k < BytesRead; k++)
 						{
-							if ((Data[i] == '|') || (Data[i + 1] == '|'))
-								break;
-
-							// Read ASCII float value into float array and forward to next value
-							if (f >= FloatSkip)
+							if ((Data[k] == '|') || (Data[k] == '\n') || (Data[k] == '\r'))
 							{
-								MotionLine[m] = atof((char *)&Data[i]);
-								m++;
+								bMotionLineEndFound = true;
+								break;
 							}
-							for (i++; i < k; i++)
-								if (Data[i] == ' ')
-									break;
 						}
-						FloatCount = m;
 					}
-				} // End motionlinefound
+				}
+				else
+				{
+					// Just synchronize to first float and check if floatcount matches bonecount else try next line
+					// Standard BVH format:
+					// 0.00 0.00 ... 0.00
+					i = j = k = 0;
+					for (; i < BytesRead - 1;)
+					{
+						for (; i < BytesRead; i++)
+						{
+							if ((Data[i] >= '0') && (Data[i] <= '9') || (Data[i] == '-') || (Data[i] == '.'))
+							{
+								j = i;
+								bMotionLineBeginFound = true;
+								break;
+							}
+						}
+						if (bMotionLineBeginFound == true)
+						{
+							int32 t = 0;
+							bMotionLineEndFound = false;
+							// Scan for the end of the motion line and count empty spaces between floats
+							for (i = j; i < BytesRead - 1; i++)
+							{
+								if (((Data[i] == ' ') || (Data[i] == '\t')) && (((Data[i + 1] >= '0') && (Data[i + 1] <= '9')) || (Data[i + 1] == '-') || (Data[i + 1] == '.')))
+									t++;
+								if ((Data[i] == '\n') || (Data[i] == '\r'))
+								{
+									bMotionLineEndFound = true;
+									break;
+								}
+							}
+							if (bMotionLineEndFound)
+							{
+								int32 FloatsPerBone = 6;	 // 3 for x,y,z translation and 3 for x,y,z rotation
+								int32 FloatsPerReference = 6; // 3 for x,y,z translation and 3 for x,y,z rotation
+
+								if (bDisplacement == false)
+									FloatsPerBone = 3;	// If there is no displacement (translation) info we have only 3 floats for rotation left
+								if (bReference == false)
+									FloatsPerReference = 0;
+								// Check if empty spaces matches bone count
+								if (t == ((BoneNr * FloatsPerBone) + FloatsPerReference - 1))
+								{
+									k = i;
+									break;
+								}
+							}
+						}
+					} 
+				}
+
+				if (bMotionLineEndFound == true)
+				{
+					// We have now a valid motion line captured between j and k
+												
+					// Forward to first value
+					for (i = j; i < k; i++)
+						if ((Data[i] >= '0') && (Data[i] <= '9') || (Data[i] == '-') || (Data[i] == '.'))
+							break;
+
+					int32 m = 0;
+					// Get all float values from motion line
+					for (int32 f = 0; f < MAXFLOATS && i < k; f++)
+					{													
+						// Read ASCII float value into float array
+						if (f >= FloatSkip)
+						{
+							MotionLine[m] = atof((char *)&Data[i]);
+							m++;
+						}	
+						// Forward to end of value we read
+						for (; i < k; i++)
+							if (((Data[i] < '0') || (Data[i] > '9')) && (Data[i] != '-') && (Data[i] != '.'))
+								break;
+							
+						// Forward to next value
+						for (; i < k; i++)
+						{
+							// Sanitycheck for line ending
+							if ((Data[i] == '|') || (Data[i] == '\n') || (Data[i] == '\r'))
+							{							
+								i = k; // Stop scanning
+								break;
+							}
+							if ((Data[i] >= '0') && (Data[i] <= '9') || (Data[i] == '-') || (Data[i] == '.'))
+								break;
+						}
+					}
+					FloatCount = m;
+				} // End bMotionLineEndFound
 
 				// If we get more data then we can process per tick, read socket till no more data is left and ignore it
 				while (ReceiverSocket->HasPendingData(BytesPending))

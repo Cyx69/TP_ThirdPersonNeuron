@@ -24,6 +24,9 @@
 // Supported rotation matrices
 enum ChannelOrderEnum { XYZ, ZXY, YXZ }; // 123, 312, 213
 
+// Supported motion line formats
+enum MotionLineFormatEnum { Standard, Neuron};
+
 UCLASS()
 class THIRDPERSONNEURON_API AThirdPersonNeuronController : public AActor
 {
@@ -51,15 +54,16 @@ public:
 	bool Connect(FString HostName, int32 Port);
 
 	// Disconnect from BVH server
-	void Disconnect(void);
+	void Disconnect(void);			
 
 
 	bool bConnected = false;		// Connection to BVH server established?
 	bool bReference = false;		// BVH server sends a reference bone
 	bool bDisplacement = true;		// BVH server sends displacement (translation) infos
+	MotionLineFormatEnum MotionLineFormat = Neuron;	// Which motion line format is used by the BVH server?
 
 #define MAXBONES	100
-#define MAXFLOATS	MAXBONES * 6  // 3 for x,y,z translation and 3 for x,y,z rotation
+#define MAXFLOATS	MAXBONES * 6	// 3 for x,y,z translation and 3 for x,y,z rotation
 	float MotionLine[MAXFLOATS];	// Array of floats with last motion line read
 	int32 FloatCount = 0;			// How many floats did we read into MotionLine array
 private:
