@@ -106,10 +106,11 @@ void AThirdPersonNeuronController::Tick(float DeltaTime)
 							int32 t = 0;
 							bMotionLineEndFound = false;
 							// Scan for the end of the motion line and count empty spaces between floats
-							for (i = j; i < BytesRead - 1; i++)
+							for (i = j; i < BytesRead; i++)
 							{
-								if (((Data[i] == ' ') || (Data[i] == '\t')) && (((Data[i + 1] >= '0') && (Data[i + 1] <= '9')) || (Data[i + 1] == '-') || (Data[i + 1] == '.')))
-									t++;
+								if (i < (BytesRead - 1))
+									if (((Data[i] == ' ') || (Data[i] == '\t')) && (((Data[i + 1] >= '0') && (Data[i + 1] <= '9')) || (Data[i + 1] == '-') || (Data[i + 1] == '.')))
+										t++;
 								if ((Data[i] == '\n') || (Data[i] == '\r'))
 								{
 									bMotionLineEndFound = true;
