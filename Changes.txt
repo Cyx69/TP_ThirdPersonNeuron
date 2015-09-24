@@ -1,6 +1,7 @@
 List of changes:
 ================
 
+- Add support for disabled displacement and enabled reference bone in motion line
 - Add DNS name support
 
 v0.1.0

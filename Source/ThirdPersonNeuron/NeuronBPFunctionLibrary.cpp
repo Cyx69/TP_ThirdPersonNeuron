@@ -35,7 +35,7 @@ bool UNeuronBPFunctionLibrary::NeuronInit(AThirdPersonNeuronController *Controll
 }
 
 // Connect to Axis Neuron
-bool UNeuronBPFunctionLibrary::NeuronConnect(AThirdPersonNeuronController *Controller, FString HostName, int32 Port)
+bool UNeuronBPFunctionLibrary::NeuronConnect(AThirdPersonNeuronController *Controller, FString HostName, int32 Port, bool bReference, bool bDisplacement)
 {
 	if (Controller == NULL)
 	{
@@ -45,6 +45,9 @@ bool UNeuronBPFunctionLibrary::NeuronConnect(AThirdPersonNeuronController *Contr
 		}
 		return false;
 	}
+
+	Controller->bReference = bReference;
+	Controller->bDisplacement = bDisplacement;
 
 	if (Controller->Connect(HostName, Port) != true)
 		return false;
@@ -73,6 +76,7 @@ bool UNeuronBPFunctionLibrary::NeuronDisconnect(AThirdPersonNeuronController *Co
 bool UNeuronBPFunctionLibrary::NeuronReadMotion(AThirdPersonNeuronController *Controller, FVector& Translation, FRotator& Rotation, FVector AddTranslation, FRotator AddRotation, int32 BoneIndex, ENeuronSkeletonEnum SkeletonType)
 {
 	bool bExit = false;
+	int32 FloatsPerBone = 6; // 3 for x,y,z translation and 3 for x,y,z rotation
 
 	if (Controller == NULL)
 	{
@@ -94,7 +98,13 @@ bool UNeuronBPFunctionLibrary::NeuronReadMotion(AThirdPersonNeuronController *Co
 		}
 		bExit = true;
 	}
-	else if ((BoneIndex * 6) > Controller->FloatCount)
+
+	if (Controller->bDisplacement == false)
+	{
+		FloatsPerBone = 3;	// If there is no displacement (translation) info we have only 3 floats for rotation left
+	}
+	
+	if ((BoneIndex * FloatsPerBone) > Controller->FloatCount)
 	{	
 		bExit = true;
 	}
@@ -111,47 +121,54 @@ bool UNeuronBPFunctionLibrary::NeuronReadMotion(AThirdPersonNeuronController *Co
 	// Translation
 	//
 
-	// Read translation values and remove BVH reference position
-	float X = Controller->MotionLine[(BoneIndex * 6) + Controller->Skeleton[BoneIndex].XPos] - Controller->Skeleton[BoneIndex].Offset[0];
-	float Y = Controller->MotionLine[(BoneIndex * 6) + Controller->Skeleton[BoneIndex].YPos] - Controller->Skeleton[BoneIndex].Offset[1];
-	float Z = Controller->MotionLine[(BoneIndex * 6) + Controller->Skeleton[BoneIndex].ZPos] - Controller->Skeleton[BoneIndex].Offset[2];
-	
-	// Map BVH right hand system to local bone coordinate system
-	switch (SkeletonType)
+	if (Controller->bDisplacement == true)
 	{
-		case ENeuronSkeletonEnum::VE_Neuron:  // Neuron BVH skeleton
+		// Read translation values and remove BVH reference position
+		float X = Controller->MotionLine[(BoneIndex * FloatsPerBone) + Controller->Skeleton[BoneIndex].XPos] - Controller->Skeleton[BoneIndex].Offset[0];
+		float Y = Controller->MotionLine[(BoneIndex * FloatsPerBone) + Controller->Skeleton[BoneIndex].YPos] - Controller->Skeleton[BoneIndex].Offset[1];
+		float Z = Controller->MotionLine[(BoneIndex * FloatsPerBone) + Controller->Skeleton[BoneIndex].ZPos] - Controller->Skeleton[BoneIndex].Offset[2];
+	
+		// Map BVH right hand system to local bone coordinate system
+		switch (SkeletonType)
 		{
-			if (BoneIndex == 0)
-			{	// Hips
-				Translation = FVector(X, -Y, Z);
+			case ENeuronSkeletonEnum::VE_Neuron:  // Neuron BVH skeleton
+			{
+				if (BoneIndex == 0)
+				{	// Hips
+					Translation = FVector(X, -Y, Z);
+				}
+				else if ((BoneIndex >= 1) && (BoneIndex <= 6))
+				{	// Legs
+					Translation = FVector(X, Y, -Z);
+				}
+				else if ((BoneIndex >= 7) && (BoneIndex <= 12))
+				{	// Spine,...
+					Translation = FVector(X, -Y, -Z);
+				}
+				else if ((BoneIndex >= 13) && (BoneIndex <= 35))
+				{	// Right arm
+					Translation = FVector(-Z, X, Y);
+				}
+				else if ((BoneIndex >= 36) && (BoneIndex <= 58))
+				{	// Left arm
+					Translation = FVector(Z, -X, Y);
+				}
+				break;
 			}
-			else if ((BoneIndex >= 1) && (BoneIndex <= 6))
-			{	// Legs
-				Translation = FVector(X, Y, -Z);
+			case ENeuronSkeletonEnum::VE_TPP_Hero:	// Hero_TPP, Old blue Unreal default skeleton with T-Pose
+			case ENeuronSkeletonEnum::VE_Mannequin: // Mannequin, New Unreal default skeleton with A-Pose
+			{
+				if (BoneIndex == 0)
+				{	// Hips
+					Translation = FVector(Y, Z, -X);
+				}
+				// Ignore other bones
 			}
-			else if ((BoneIndex >= 7) && (BoneIndex <= 12))
-			{	// Spine,...
-				Translation = FVector(X, -Y, -Z);
-			}
-			else if ((BoneIndex >= 13) && (BoneIndex <= 35))
-			{	// Right arm
-				Translation = FVector(-Z, X, Y);
-			}
-			else if ((BoneIndex >= 36) && (BoneIndex <= 58))
-			{	// Left arm
-				Translation = FVector(Z, -X, Y);
-			}
-			break;
 		}
-		case ENeuronSkeletonEnum::VE_TPP_Hero:	// Hero_TPP, Old blue Unreal default skeleton with T-Pose
-		case ENeuronSkeletonEnum::VE_Mannequin: // Mannequin, New Unreal default skeleton with A-Pose
-		{
-			if (BoneIndex == 0)
-			{	// Hips
-				Translation = FVector(Y, Z, -X);
-			}
-			// Ignore other bones
-		}
+	}
+	else
+	{
+		Translation.X = Translation.Y = Translation.Z = 0;
 	}
 
 	// Add additional translation
@@ -166,9 +183,9 @@ bool UNeuronBPFunctionLibrary::NeuronReadMotion(AThirdPersonNeuronController *Co
 	//
 
 	// Read rotation values and map to pitch, yaw, roll (y, z, x)
-	float XR = Controller->MotionLine[(BoneIndex * 6) + Controller->Skeleton[BoneIndex].XRot] * PI / 180.f;
-	float YR = Controller->MotionLine[(BoneIndex * 6) + Controller->Skeleton[BoneIndex].YRot] * PI / 180.f;
-	float ZR = Controller->MotionLine[(BoneIndex * 6) + Controller->Skeleton[BoneIndex].ZRot] * PI / 180.f;
+	float XR = Controller->MotionLine[(BoneIndex * FloatsPerBone) + Controller->Skeleton[BoneIndex].XRot] * PI / 180.f;
+	float YR = Controller->MotionLine[(BoneIndex * FloatsPerBone) + Controller->Skeleton[BoneIndex].YRot] * PI / 180.f;
+	float ZR = Controller->MotionLine[(BoneIndex * FloatsPerBone) + Controller->Skeleton[BoneIndex].ZRot] * PI / 180.f;
 
 	float SX = sin(XR);
 	float CX = cos(XR);

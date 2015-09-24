@@ -53,20 +53,25 @@ public:
 	// Disconnect from BVH server
 	void Disconnect(void);
 
-	bool bConnected = false;
+
+	bool bConnected = false;		// Connection to BVH server established?
+	bool bReference = false;		// BVH server sends a reference bone
+	bool bDisplacement = true;		// BVH server sends displacement (translation) infos
 
 #define MAXBONES	100
 #define MAXFLOATS	MAXBONES * 6  // 3 for x,y,z translation and 3 for x,y,z rotation
-	float MotionLine[MAXFLOATS];
-	int32 FloatCount = 0;
+	float MotionLine[MAXFLOATS];	// Array of floats with last motion line read
+	int32 FloatCount = 0;			// How many floats did we read into MotionLine array
+private:
+	int32 FloatSkip = 0;			// How many leading floats should we skip?	
 
-
+public:
 	// BVH File
 	bool ParseBVHFile(FString BVHFileName);
 
 	typedef struct Bone
 	{
-		FString Name;
+		FString Name;		// Name of bone
 		float Offset[3];	// x,y,z translation offset
 		int32 ChannelCount; // Should be 6
 		// Channel positions in motion line
@@ -76,5 +81,5 @@ public:
 	} BONE;
 
 	BONE Skeleton[MAXBONES];
-	int32 BoneNr = 0;	
+	int32 BoneNr = 0;		// How many bones has above Skeleton array
 };

@@ -38,7 +38,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Init Neuron", Keywords = "Init and read BVH reference skeleton"))
 		static bool NeuronInit(AThirdPersonNeuronController *Controller, const FString BVHFileName = FString(TEXT("axis.bvh")));
 	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Connect Neuron", Keywords = "Connect to Axis Neuron"))
-		static bool NeuronConnect(AThirdPersonNeuronController *Controller, const FString HostName = FString(TEXT("127.0.0.1")), int32 Port = 7001);
+		static bool NeuronConnect(AThirdPersonNeuronController *Controller, const FString HostName = FString(TEXT("127.0.0.1")), int32 Port = 7001, bool bReference = false, bool bDisplacement = true);
 	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Disconnect Neuron", Keywords = "Disconnect from Axis Neuron"))
 		static bool NeuronDisconnect(AThirdPersonNeuronController *Controller);
 	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Read Neuron Motion", Keywords = "Read motion data from Axis Neuron"))

@@ -36,11 +36,11 @@ void AThirdPersonNeuronController::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	// Read each tick a new motionline. Additionally motionlines are just discarded.
-	if (bConnected)
+	if (bConnected == true)
 	{
 		uint32 BytesPending = 0;
 
-		if (ReceiverSocket->HasPendingData(BytesPending))
+		if (ReceiverSocket->HasPendingData(BytesPending) == true)
 		{
 #define SIZEOFDATA 10000
 			uint8 Data[SIZEOFDATA];
@@ -48,7 +48,7 @@ void AThirdPersonNeuronController::Tick(float DeltaTime)
 			bool bMotionlineFound = false;
 			bool bMotionlineEndFound = false;
 
-			if (ReceiverSocket->Recv(Data, SIZEOFDATA, BytesRead))
+			if (ReceiverSocket->Recv(Data, SIZEOFDATA, BytesRead) == true)
 			{
 				int32 i, j, k;
 				for (i = j = k = 0; i < BytesRead - 2; i++)
@@ -80,6 +80,7 @@ void AThirdPersonNeuronController::Tick(float DeltaTime)
 					if (bMotionlineEndFound == true)
 					{
 						int32 f = 0;
+						int32 m = 0;
 						// We have now a motion line captured between j and k
 						for (i = j; f < MAXFLOATS && i < k; f++)
 						{
@@ -87,12 +88,16 @@ void AThirdPersonNeuronController::Tick(float DeltaTime)
 								break;
 
 							// Read ASCII float value into float array and forward to next value
-							MotionLine[f] = atof((char *)&Data[i]);
+							if (f >= FloatSkip)
+							{
+								MotionLine[m] = atof((char *)&Data[i]);
+								m++;
+							}
 							for (i++; i < k; i++)
 								if (Data[i] == ' ')
 									break;
 						}
-						FloatCount = f;
+						FloatCount = m;
 					}
 				} // End motionlinefound
 
@@ -104,7 +109,7 @@ void AThirdPersonNeuronController::Tick(float DeltaTime)
 				}
 			} // End Recv
 		} // End HasPendingData
-	} // End connected
+	} // End bConnected
 }
 
 bool AThirdPersonNeuronController::ParseBVHFile(FString BVHFileName)
@@ -223,6 +228,16 @@ bool AThirdPersonNeuronController::Connect(FString HostName, int32 Port)
 {
 	if (bConnected == true)
 		return false;
+
+	// Set up reference bone handling
+	// Template does not support transition for the reference bone yet
+	// Should be no problem, because normally reference bone does not change values.
+	if (bReference == true)
+	{
+		// Skip reference bone x,y,z translation and x,y,z rotation 
+		// regardless if displacement is active or not (Axis Neuron sends always 6 floats)
+		FloatSkip = 6; 
+	}
 
 	// Create TCP Socket and connect
 	ISocketSubsystem* const SocketSubSystem = ISocketSubsystem::Get(); 
