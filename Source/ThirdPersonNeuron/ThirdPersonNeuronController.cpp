@@ -218,17 +218,41 @@ bool AThirdPersonNeuronController::ParseBVHFile(FString BVHFileName)
 	return true;
 }
 
+// Connect to BVH server (for e.g. Axis Neuron SW)
 bool AThirdPersonNeuronController::Connect(FString HostName, int32 Port)
 {
-	ReceiverSocket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(NAME_Stream, TEXT("PerceptionNeuronSocket"), false);
-	FIPv4Address IP;
-	FIPv4Address::Parse(HostName, IP);
-	auto Addr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr(IP.GetValue(), Port);
-	bConnected = ReceiverSocket->Connect(*Addr);
+	if (bConnected == true)
+		return false;
+
+	// Create TCP Socket and connect
+	ISocketSubsystem* const SocketSubSystem = ISocketSubsystem::Get(); 
+	if (SocketSubSystem)
+	{
+		ReceiverSocket = SocketSubSystem->CreateSocket(NAME_Stream, TEXT("PerceptionNeuronSocket"), false);
+		if (ReceiverSocket == NULL)
+			return false;
+	
+		auto ResolveInfo = SocketSubSystem->GetHostByName(TCHAR_TO_ANSI(*HostName));
+		while (!ResolveInfo->IsComplete());
+
+		if (ResolveInfo->GetErrorCode() == 0)
+		{
+			const FInternetAddr* Addr = &ResolveInfo->GetResolvedAddress();
+			uint32 IP;
+			Addr->GetIp(IP);
+			
+			TSharedRef<FInternetAddr> InetAddr = SocketSubSystem->CreateInternetAddr();
+			InetAddr->SetIp(IP);
+			InetAddr->SetPort(Port);
+
+			bConnected = ReceiverSocket->Connect(*InetAddr);
+		}
+	}
 
 	return bConnected;
 }
 
+// Called when the game stops
 void AThirdPersonNeuronController::BeginDestroy()
 {
 	Super::BeginDestroy();
@@ -236,6 +260,7 @@ void AThirdPersonNeuronController::BeginDestroy()
 	Disconnect();
 }
 
+// Disconnect from BVH server
 void AThirdPersonNeuronController::Disconnect(void)
 {
 	if (bConnected == true)

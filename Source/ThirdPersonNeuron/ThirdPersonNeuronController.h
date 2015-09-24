@@ -47,7 +47,10 @@ public:
 private:
 	FSocket* ReceiverSocket;
 public:
+	// Connect to BVH server (for e.g. Axis Neuron SW) with
 	bool Connect(FString HostName, int32 Port);
+
+	// Disconnect from BVH server
 	void Disconnect(void);
 
 	bool bConnected = false;
