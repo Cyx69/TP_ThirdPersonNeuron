@@ -12,12 +12,13 @@
 Contents:
 ---------
         I.    Description
-        II.   Installation
-        III.  Configuration
-        IV.   Contact, Donation
-        V.    Greetings        
-        VI.   LICENSE
-        VII.  Third party copyrights and trademarks
+        II.   Requirements
+        III.  Installation
+        IV.   Configuration
+        V.    Contact, Donation
+        VI.   Greetings        
+        VII.  LICENSE
+        VIII. Third party copyrights and trademarks
 
 
 I. Description
@@ -25,8 +26,25 @@ I. Description
 This template is based on the Unreal (R) Engine 4 First Person C++ 4.9 template and 
 enhances it with the support for the Perception Neuron (TM) motion capture suit.
 
+Perception Neuron (TM) is a motion capture suit from Noitom financed by a Kickstarter campaign last year:
+https://www.kickstarter.com/projects/1663270989/project-perception-neuron
+Further details about the suit here: https://neuronmocap.com
 
-II. Installation
+Please use this thread to discuss the technical details about this template:
+https://forums.unrealengine.com/showthread.php?85318-Perception-Neuron-Template&p=384125#post384125
+
+How it is done:
+- UE4 connects over a TCP connection to the BVH server and retrieves the raw ASCII BVH data
+- Each tick one motion line is parsed and locally stored
+- The stored rotation and transition data is then recalculated to map between the different coordinate systems and rotation orders.
+- The animation graph reads this information and replaces the rotation and transition for each bone.
+
+To get a better performance the network handling and calculation is done in C++.
+A custom blueprint node retrieves this data from the C++ world and pumps it into your animation blueprint.
+To handle and configure each network connection separately a custom controller actor was implemented.
+
+
+II. Requirements
 ================
 * Make sure that you have Unreal Engine 4.9.1 or newer installed.
 * Make also sure that you have Visual Studio 2013 installed.
@@ -34,6 +52,13 @@ II. Installation
   Don't be afraid if you aren't familiar with C++ and don't want to change the code.
   Unreal automatically compiles the code while opening the project for the first time.
   You can just close Visual Studio and save the changes after starting.
+* Axis Neuron SW Player (Free version is available here: https://neuronmocap.com/downloads)
+  or alternatively you can use my minimal BVH send server here:
+  https://github.com/Cyx69/bvhsend/releases
+
+
+III. Installation
+=================
 * Download the template under: "https://github.com/Cyx69/TP_ThirdPersonNeuron/releases".
 * Unpack the file to your UE4 template folder, for e.g. "C:\Program Files\Unreal Engine\4.9\Templates\TP_ThirdPersonNeuron".
   Make sure that the project files are placed and visible under "...\Templates\TP_ThirdPersonNeuron" after unzip.
@@ -42,8 +67,8 @@ II. Installation
 * Create a new project with the above template selected.
 
 
-III. Configuration
-==================
+IV. Configuration
+=================
 The template was developed and tested with Unreal Engine 4.9.1 and Axis Neuron 3.5.19.1225.
 The C++ development was done with MS Visual Studio Community 2013.
 
@@ -63,8 +88,8 @@ You can change these settings in the Controller Blueprint if you want to use a s
 And you can add further controllers if you want to retrieve motion data from further suits or BVH server.
 
 
-IV. Contact, Donation
-=====================
+V. Contact, Donation
+====================
 Heiko Fink aka Cyx
 EMail: hfinkdeletemenospam@web.de
 
@@ -73,8 +98,8 @@ the further development and make a donation here:
 https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=DYZEA9A3MLA5Y
 
 
-V. Greetings
-============
+VI. Greetings
+=============
 Many thanks to:
 * Everybody which helped me to improve and develop this template further
 * Epic for providing the world best game engine for free
@@ -84,8 +109,8 @@ Many thanks to:
 * Microsoft for providing a free C++ IDE for individual developers
 
 
-VI. LICENSE
-===========
+VII. LICENSE
+============
 The MIT License (MIT)
 
 Copyright (c) 2015 Heiko Fink
@@ -110,7 +135,7 @@ THE SOFTWARE
 
 
 
-VII. Third party copyrights and trademarks
-==========================================
+VIII. Third party copyrights and trademarks
+===========================================
 Perception Neuron (TM) is a trademark of Beijing Noitom Technology Ltd.
 Unreal (R) Engine is under the copyright of Epic Games, Inc.
