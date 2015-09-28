@@ -28,7 +28,7 @@ bool UNeuronBPFunctionLibrary::NeuronInit(AThirdPersonNeuronController *Controll
 		return false;
 	}
 
-	if (Controller->ParseBVHFile(BVHFileName) != true)
+	if (Controller->ParseBVHReferenceFile(BVHFileName) != true)
 		return false;
 
 	return true;
@@ -76,6 +76,46 @@ bool UNeuronBPFunctionLibrary::NeuronDisconnect(AThirdPersonNeuronController *Co
 	return true;
 }
 
+// Play BVH file
+bool UNeuronBPFunctionLibrary::NeuronPlay(AThirdPersonNeuronController *Controller, FString BVHFileName, bool bEndless, bool bReference, bool bDisplacement, ENeuronMotionLineFormatEnum MotionLineFormat)
+{
+	if (Controller == NULL)
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Controller is invalid.")));
+		}
+		return false;
+	}
+
+	Controller->bReference = bReference;
+	Controller->bDisplacement = bDisplacement;
+	if (MotionLineFormat == ENeuronMotionLineFormatEnum::VE_Neuron)
+		Controller->MotionLineFormat = Neuron;
+	else
+		Controller->MotionLineFormat = Standard;
+
+	if (Controller->Play(BVHFileName, bEndless) != true)
+		return false;
+
+	return true;
+}
+
+// Pause playing BVH file
+bool UNeuronBPFunctionLibrary::NeuronPause(AThirdPersonNeuronController *Controller, bool bPause)
+{
+	if (Controller == NULL)
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Controller is invalid.")));
+		}
+		return false;
+	}
+
+	return (Controller->Pause(bPause));
+}
+
 // Read motion data from Axis Neuron
 bool UNeuronBPFunctionLibrary::NeuronReadMotion(AThirdPersonNeuronController *Controller, FVector& Translation, FRotator& Rotation, FVector AddTranslation, FRotator AddRotation, int32 BoneIndex, ENeuronSkeletonEnum SkeletonType)
 {
@@ -90,7 +130,7 @@ bool UNeuronBPFunctionLibrary::NeuronReadMotion(AThirdPersonNeuronController *Co
 		}
 		bExit = true;
 	}
-	else if (!Controller->bConnected)
+	else if ((Controller->bConnected == false) && (Controller->bPlay == false))
 	{
 		bExit = true;
 	}
@@ -167,6 +207,7 @@ bool UNeuronBPFunctionLibrary::NeuronReadMotion(AThirdPersonNeuronController *Co
 					Translation = FVector(Y, Z, -X);
 				}
 				// Ignore other bones
+				break;
 			}
 		}
 	}
@@ -342,8 +383,8 @@ bool UNeuronBPFunctionLibrary::NeuronReadMotion(AThirdPersonNeuronController *Co
 				Quat.Y = Z;
 				Quat.Z = -X;
 			}
+			break;
 		}
-		break;
 	}		
 	
 	Rotation = Quat.Rotator();

@@ -1,9 +1,19 @@
 List of changes:
 ================
 
+v0.2.0
+- Playback Controller added. 
+  Now you can directly play BVH files placed ín your content folder instead connecting to a BVH server.
+  See new Blueprint nodes Play and Pause.
+  To have an example Neuron character is now connected to a player controller instead to a network controller.
+- Neuron and TPP_Hero are now part of a character blueprint (To have an example for that)
+- Hips bone of TPP_Hero mesh is used to translate complete actor (capsule).
+  Actor rotation is still a problem and is not connected.
 - Add support for standard BVH format
-- Add support for disabled displacement and enabled reference bone in motion line
+- Add support for disabled displacement and/or enabled reference bone in motion line
 - Add DNS name support
+- Add Blender source file for Neuron character
+- Further comments and minor improvements
 
 v0.1.0
 - Initial version

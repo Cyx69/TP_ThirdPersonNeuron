@@ -36,11 +36,15 @@ void AThirdPersonNeuronController::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	// Read each tick a new motionline. Additionally motionlines are just discarded.
-	if (bConnected == true)
+	if ((bConnected == true) || (bPlay == true))
 	{
 		uint32 BytesPending = 0;
 
-		if (ReceiverSocket->HasPendingData(BytesPending) == true)
+		if (bConnected == true)
+			if (ReceiverSocket->HasPendingData(BytesPending) != true)
+				BytesPending = 0;
+
+		if ((BytesPending) || (bPlay == true))
 		{
 #define SIZEOFDATA 10000
 			uint8 Data[SIZEOFDATA];
@@ -48,7 +52,42 @@ void AThirdPersonNeuronController::Tick(float DeltaTime)
 			bool bMotionLineBeginFound = false;
 			bool bMotionLineEndFound = false;
 
-			if (ReceiverSocket->Recv(Data, SIZEOFDATA, BytesRead) == true)
+			if (bConnected == true) // Network connection?
+			{
+				if (ReceiverSocket->Recv(Data, SIZEOFDATA, BytesRead) != true)
+					BytesRead = 0;
+			}
+			else if (bPlay == true)	// Player connected ?
+			{				
+				DeltaTimeAdded += DeltaTime;
+				if (FrameTime < DeltaTimeAdded) // Synchronize to FrameTime
+				{
+					DeltaTimeAdded -= FrameTime;
+					while (DeltaTimeAdded > FrameTime) // We are too slow => Skip frames
+					{						
+						DeltaTimeAdded -= FrameTime;						
+						MotionLinePointer++;
+						if ((MotionLinePointer >= (MotionLineOffset + Frames)) && (bEndless == true))
+							MotionLinePointer = MotionLineOffset;				
+					}
+
+					if (MotionLinePointer < (MotionLineOffset + Frames))
+					{
+						if (SIZEOFDATA >= PlayerMotionLines[MotionLinePointer].Len() + 1) // Sanity check
+						{
+							// Convert string based motion line back to an array of chars to pump the line through the parser (Little bit ugly...)
+							memcpy(Data, TCHAR_TO_ANSI(*PlayerMotionLines[MotionLinePointer]), PlayerMotionLines[MotionLinePointer].Len());
+							Data[PlayerMotionLines[MotionLinePointer].Len()] = '\n';
+							BytesRead = PlayerMotionLines[MotionLinePointer].Len() + 1;
+						}
+						MotionLinePointer++; // Increment line for next time;
+						if ((MotionLinePointer >= (MotionLineOffset + Frames)) && (bEndless == true))
+							MotionLinePointer = MotionLineOffset;						
+					}					
+				}
+			}
+
+			if (BytesRead)
 			{
 				int32 i, j, k;
 
@@ -177,20 +216,25 @@ void AThirdPersonNeuronController::Tick(float DeltaTime)
 					FloatCount = m;
 				} // End bMotionLineEndFound
 
-				// If we get more data then we can process per tick, read socket till no more data is left and ignore it
-				while (ReceiverSocket->HasPendingData(BytesPending))
+				if (bConnected)
 				{
-					ReceiverSocket->Recv(Data, SIZEOFDATA, BytesRead);
-					// if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Data skipped: %u"), BytesRead));
+					// If we get more data then we can process per tick, read socket till no more data is left and ignore it
+					while (ReceiverSocket->HasPendingData(BytesPending))
+					{
+						ReceiverSocket->Recv(Data, SIZEOFDATA, BytesRead);
+						// if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Data skipped: %u"), BytesRead));
+					}
 				}
 			} // End Recv
 		} // End HasPendingData
 	} // End bConnected
+
+
 }
 
-bool AThirdPersonNeuronController::ParseBVHFile(FString BVHFileName)
+bool AThirdPersonNeuronController::ParseBVHReferenceFile(FString BVHFileName)
 {
-	// Load BVH file
+	// Load BVH Reference file
 	TArray<FString> Lines;
 	if (FFileHelper::LoadANSITextFileToStrings(*(FPaths::GameDir() + FString("Content/") + BVHFileName), NULL, Lines) != true)
 	{
@@ -359,5 +403,68 @@ void AThirdPersonNeuronController::Disconnect(void)
 		bConnected = false;
 		ReceiverSocket->Close();
 	}
+}
+
+// BVH Player
+bool AThirdPersonNeuronController::Play(FString BVHFileName, bool bEndless)
+{
+	// Set to default
+	bPlayerInitialized = false;
+	bPlay = false;
+	PlayerMotionLines.Empty();
+
+	// Load BVH file	
+	if (FFileHelper::LoadANSITextFileToStrings(*(FPaths::GameDir() + FString("Content/") + BVHFileName), NULL, PlayerMotionLines) != true)
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Could not load BVH file:%s"), *(FPaths::GameDir() + FString("Content/") + BVHFileName)));
+		}
+		return false;
+	}
+
+	// Parse BVH file, get frame time and beginning of motion line part
+	for (int32 i = 0; i < PlayerMotionLines.Num(); i++)
+	{
+		PlayerMotionLines[i].Trim();
+
+		if (PlayerMotionLines[i].StartsWith(TEXT("Frames:"), ESearchCase::IgnoreCase) == true)
+		{
+			TArray<FString> Words;
+			if (PlayerMotionLines[i].ParseIntoArray(Words, TEXT(" "), false) >= 2)
+			{
+				Frames = FCString::Atoi(*Words[1]);
+			}
+		}
+		else if (PlayerMotionLines[i].StartsWith(TEXT("Frame Time:"), ESearchCase::IgnoreCase) == true)
+		{
+			TArray<FString> Words;
+			if (PlayerMotionLines[i].ParseIntoArray(Words, TEXT(" "), false) >= 2)
+			{
+				FrameTime = FCString::Atof(*Words[2]);
+				if (FrameTime == 0)
+					FrameTime = 0.010f;  // Default to a common value
+			}
+			if ((i + 1) <= PlayerMotionLines.Num())
+			{			
+				MotionLineOffset = i + 1;
+				MotionLinePointer = MotionLineOffset;
+				bPlayerInitialized = true;
+				bPlay = true;
+				AThirdPersonNeuronController::bEndless = bEndless;
+				if (Frames > PlayerMotionLines.Num() - (i + 1))
+					Frames = PlayerMotionLines.Num() - (i + 1);
+				DeltaTimeAdded = FrameTime; // Play motion immediately with next frame
+			}
+		}
+	}
+	return bPlayerInitialized;
+}
+
+bool AThirdPersonNeuronController::Pause(bool bPause)
+{
+	if (bPlayerInitialized == true)
+		bPlay = bPause;
+	return bPlay;
 }
 

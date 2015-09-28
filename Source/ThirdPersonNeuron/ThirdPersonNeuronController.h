@@ -46,7 +46,9 @@ public:
 	virtual void BeginDestroy() override;
 
 
+	//
 	// TCP connection
+	//
 private:
 	FSocket* ReceiverSocket;
 public:
@@ -69,9 +71,12 @@ public:
 private:
 	int32 FloatSkip = 0;			// How many leading floats should we skip?	
 
+
+	//
+	// BVH Reference File
+	//
 public:
-	// BVH File
-	bool ParseBVHFile(FString BVHFileName);
+	bool ParseBVHReferenceFile(FString BVHFileName);
 
 	typedef struct Bone
 	{
@@ -86,4 +91,26 @@ public:
 
 	BONE Skeleton[MAXBONES];
 	int32 BoneNr = 0;		// How many bones has above Skeleton array
+
+
+	//
+	// BVH Player
+	//
+public:
+	bool Play(FString BVHFileName, bool bEndless);
+	bool Pause(bool bPause);
+
+private:
+	float FrameTime = 0;
+	float DeltaTimeAdded = 0;
+	int32 MotionLineOffset = 0;
+	int32 Frames = 0;
+	int32 MotionLinePointer = 0;
+	bool bPlayerInitialized = false;
+	bool bEndless = true;
+	TArray<FString> PlayerMotionLines;
+
+public:
+	bool bPlay = false;
+
 };
