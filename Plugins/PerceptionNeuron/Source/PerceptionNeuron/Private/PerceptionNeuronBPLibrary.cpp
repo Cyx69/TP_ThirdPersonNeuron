@@ -181,40 +181,40 @@ bool UPerceptionNeuronBPLibrary::NeuronReadMotion(APerceptionNeuronController *C
 		// Map BVH right hand system to local bone coordinate system
 		switch (SkeletonType)
 		{
-		case ENeuronSkeletonEnum::VE_Neuron:  // Neuron BVH skeleton
-		{
-			if (BoneIndex == 0)
-			{	// Hips
-				Translation = FVector(X, -Y, Z);
+			case ENeuronSkeletonEnum::VE_Neuron:  // Neuron BVH skeleton
+			{
+				if (BoneIndex == 0)
+				{	// Hips
+					Translation = FVector(X, -Y, Z);
+				}
+				else if ((BoneIndex >= 1) && (BoneIndex <= 6))
+				{	// Legs
+					Translation = FVector(X, Y, -Z);
+				}
+				else if ((BoneIndex >= 7) && (BoneIndex <= 12))
+				{	// Spine,...
+					Translation = FVector(X, -Y, -Z);
+				}
+				else if ((BoneIndex >= 13) && (BoneIndex <= 35))
+				{	// Right arm
+					Translation = FVector(-Z, X, Y);
+				}
+				else if ((BoneIndex >= 36) && (BoneIndex <= 58))
+				{	// Left arm
+					Translation = FVector(Z, -X, Y);
+				}
+				break;
 			}
-			else if ((BoneIndex >= 1) && (BoneIndex <= 6))
-			{	// Legs
-				Translation = FVector(X, Y, -Z);
+			case ENeuronSkeletonEnum::VE_TPP_Hero:	// Hero_TPP, Old blue Unreal default skeleton with T-Pose
+			case ENeuronSkeletonEnum::VE_Mannequin: // Mannequin, New Unreal default skeleton with A-Pose
+			{
+				if (BoneIndex == 0)
+				{	// Hips
+					Translation = FVector(Y, Z, -X);
+				}
+				// Ignore other bones
+				break;
 			}
-			else if ((BoneIndex >= 7) && (BoneIndex <= 12))
-			{	// Spine,...
-				Translation = FVector(X, -Y, -Z);
-			}
-			else if ((BoneIndex >= 13) && (BoneIndex <= 35))
-			{	// Right arm
-				Translation = FVector(-Z, X, Y);
-			}
-			else if ((BoneIndex >= 36) && (BoneIndex <= 58))
-			{	// Left arm
-				Translation = FVector(Z, -X, Y);
-			}
-			break;
-		}
-		case ENeuronSkeletonEnum::VE_TPP_Hero:	// Hero_TPP, Old blue Unreal default skeleton with T-Pose
-		case ENeuronSkeletonEnum::VE_Mannequin: // Mannequin, New Unreal default skeleton with A-Pose
-		{
-			if (BoneIndex == 0)
-			{	// Hips
-				Translation = FVector(Y, Z, -X);
-			}
-			// Ignore other bones
-			break;
-		}
 		}
 	}
 	else
@@ -226,7 +226,7 @@ bool UPerceptionNeuronBPLibrary::NeuronReadMotion(APerceptionNeuronController *C
 	Translation.X += AddTranslation.X;
 	Translation.Y += AddTranslation.Y;
 	Translation.Z += AddTranslation.Z;
-
+	
 
 
 	//
@@ -248,55 +248,55 @@ bool UPerceptionNeuronBPLibrary::NeuronReadMotion(APerceptionNeuronController *C
 	FMatrix RotMatrix;
 	switch (Controller->Skeleton[BoneIndex].RotOrder)
 	{
-	case XYZ:
-	{
-		RotMatrix.M[0][0] = CY*CZ;
-		RotMatrix.M[0][1] = -CY*SZ;
-		RotMatrix.M[0][2] = SY;
-		RotMatrix.M[0][3] = 0;
-		RotMatrix.M[1][0] = CZ*SX*SY + CX*SZ;
-		RotMatrix.M[1][1] = CX*CZ - SX*SY*SZ;
-		RotMatrix.M[1][2] = -CY*SX;
-		RotMatrix.M[1][3] = 0;
-		RotMatrix.M[2][0] = SX*SZ - CX*CZ*SY;
-		RotMatrix.M[2][1] = CZ*SX + CX*SY*SZ;
-		RotMatrix.M[2][2] = CX*CY;
-		RotMatrix.M[2][3] = 0;
-		break;
-	}
-	case ZXY:
-	{
-		RotMatrix.M[0][0] = CY*CZ - SX*SY*SZ;
-		RotMatrix.M[0][1] = -CX*SZ;
-		RotMatrix.M[0][2] = CZ*SY + CY*SX*SZ;
-		RotMatrix.M[0][3] = 0;
-		RotMatrix.M[1][0] = CZ*SX*SY + CY*SZ;
-		RotMatrix.M[1][1] = CX*CZ;
-		RotMatrix.M[1][2] = SY*SZ - CY*CZ*SX;
-		RotMatrix.M[1][3] = 0;
-		RotMatrix.M[2][0] = -CX*SY;
-		RotMatrix.M[2][1] = SX;
-		RotMatrix.M[2][2] = CX*CY;
-		RotMatrix.M[2][3] = 0;
-		break;
-	}
-	case YXZ:
-	default:
-	{
-		RotMatrix.M[0][0] = CY*CZ + SX*SY*SZ;
-		RotMatrix.M[0][1] = CZ*SX*SY - CY*SZ;
-		RotMatrix.M[0][2] = CX*SY;
-		RotMatrix.M[0][3] = 0;
-		RotMatrix.M[1][0] = CX*SZ;
-		RotMatrix.M[1][1] = CX*CZ;
-		RotMatrix.M[1][2] = -SX;
-		RotMatrix.M[1][3] = 0;
-		RotMatrix.M[2][0] = CY*SX*SZ - CZ*SY;
-		RotMatrix.M[2][1] = CY*CZ*SX + SY*SZ;
-		RotMatrix.M[2][2] = CX*CY;
-		RotMatrix.M[2][3] = 0;
-		break;
-	}
+		case XYZ:
+		{
+			RotMatrix.M[0][0] = CY*CZ;
+			RotMatrix.M[0][1] = -CY*SZ;
+			RotMatrix.M[0][2] = SY;
+			RotMatrix.M[0][3] = 0;
+			RotMatrix.M[1][0] = CZ*SX*SY + CX*SZ;
+			RotMatrix.M[1][1] = CX*CZ - SX*SY*SZ;
+			RotMatrix.M[1][2] = -CY*SX;
+			RotMatrix.M[1][3] = 0;
+			RotMatrix.M[2][0] = SX*SZ - CX*CZ*SY;
+			RotMatrix.M[2][1] = CZ*SX + CX*SY*SZ;
+			RotMatrix.M[2][2] = CX*CY;
+			RotMatrix.M[2][3] = 0;
+			break;
+		}
+		case ZXY:
+		{
+			RotMatrix.M[0][0] = CY*CZ - SX*SY*SZ;
+			RotMatrix.M[0][1] = -CX*SZ;
+			RotMatrix.M[0][2] = CZ*SY + CY*SX*SZ;
+			RotMatrix.M[0][3] = 0;
+			RotMatrix.M[1][0] = CZ*SX*SY + CY*SZ;
+			RotMatrix.M[1][1] = CX*CZ;
+			RotMatrix.M[1][2] = SY*SZ - CY*CZ*SX;
+			RotMatrix.M[1][3] = 0;
+			RotMatrix.M[2][0] = -CX*SY;
+			RotMatrix.M[2][1] = SX;
+			RotMatrix.M[2][2] = CX*CY;
+			RotMatrix.M[2][3] = 0;
+			break;
+		}
+		case YXZ:
+		default:
+		{
+			RotMatrix.M[0][0] = CY*CZ + SX*SY*SZ;
+			RotMatrix.M[0][1] = CZ*SX*SY - CY*SZ;
+			RotMatrix.M[0][2] = CX*SY;
+			RotMatrix.M[0][3] = 0;
+			RotMatrix.M[1][0] = CX*SZ;
+			RotMatrix.M[1][1] = CX*CZ;
+			RotMatrix.M[1][2] = -SX;
+			RotMatrix.M[1][3] = 0;
+			RotMatrix.M[2][0] = CY*SX*SZ - CZ*SY;
+			RotMatrix.M[2][1] = CY*CZ*SX + SY*SZ;
+			RotMatrix.M[2][2] = CX*CY;
+			RotMatrix.M[2][3] = 0;
+			break;
+		}
 	}
 
 	RotMatrix.M[3][0] = 0;
@@ -308,98 +308,98 @@ bool UPerceptionNeuronBPLibrary::NeuronReadMotion(APerceptionNeuronController *C
 	FQuat Quat = RotMatrix.ToQuat();
 	switch (SkeletonType)
 	{
-	case ENeuronSkeletonEnum::VE_Neuron:  // Neuron BVH skeleton
-	{
-		if ((BoneIndex >= 1) && (BoneIndex <= 6))
-		{	// Legs
-			Quat.Z *= -1.f;
-		}
-		else if ((BoneIndex >= 13) && (BoneIndex <= 35))
-		{	// Right Arm
-			float X = Quat.X;
-			float Y = Quat.Y;
-			float Z = Quat.Z;
-			Quat.X = -Z;
-			Quat.Y = X;
-			Quat.Z = Y;
-		}
-		else if ((BoneIndex >= 36) && (BoneIndex <= 58))
-		{	// Left Arm
-			float X = Quat.X;
-			float Y = Quat.Y;
-			float Z = Quat.Z;
-			Quat.X = Z;
-			Quat.Y = -X;
-			Quat.Z = Y;
-		}
-		else
+		case ENeuronSkeletonEnum::VE_Neuron:  // Neuron BVH skeleton
 		{
-			Quat.Y *= -1.f;
+			if ((BoneIndex >= 1) && (BoneIndex <= 6))
+			{	// Legs
+				Quat.Z *= -1.f;
+			}
+			else if ((BoneIndex >= 13) && (BoneIndex <= 35))
+			{	// Right Arm
+				float X = Quat.X;
+				float Y = Quat.Y;
+				float Z = Quat.Z;
+				Quat.X = -Z;
+				Quat.Y = X;
+				Quat.Z = Y;
+			}
+			else if ((BoneIndex >= 36) && (BoneIndex <= 58))
+			{	// Left Arm
+				float X = Quat.X;
+				float Y = Quat.Y;
+				float Z = Quat.Z;
+				Quat.X = Z;
+				Quat.Y = -X;
+				Quat.Z = Y;
+			}
+			else
+			{
+				Quat.Y *= -1.f;
+			}
+			break;
 		}
-		break;
-	}
-	case ENeuronSkeletonEnum::VE_TPP_Hero:	// Hero_TPP, Old blue Unreal default skeleton with T-Pose
-	case ENeuronSkeletonEnum::VE_Mannequin: // Mannequin, New Unreal default skeleton with A-Pose
-	{
-		if ((BoneIndex >= 1) && (BoneIndex <= 3))
-		{	// Right Leg
-			float X = Quat.X;
-			float Y = Quat.Y;
-			float Z = Quat.Z;
-			Quat.X = -Y;
-			Quat.Y = -Z;
-			Quat.Z = -X;
+		case ENeuronSkeletonEnum::VE_TPP_Hero:	// Hero_TPP, Old blue Unreal default skeleton with T-Pose
+		case ENeuronSkeletonEnum::VE_Mannequin: // Mannequin, New Unreal default skeleton with A-Pose
+		{
+			if ((BoneIndex >= 1) && (BoneIndex <= 3))
+			{	// Right Leg
+				float X = Quat.X;
+				float Y = Quat.Y;
+				float Z = Quat.Z;
+				Quat.X = -Y;
+				Quat.Y = -Z;
+				Quat.Z = -X;
+			}
+			else if (BoneIndex == 16)
+			{	// Right Hand
+				Quat.Y *= -1.f;
+			}
+			else if ((BoneIndex >= 13) && (BoneIndex <= 19))
+			{	// Right Arm and Thumb
+				float Y = Quat.Y;
+				float Z = Quat.Z;
+				Quat.Y = -Z;
+				Quat.Z = -Y;
+			}
+			else if ((BoneIndex >= 20) && (BoneIndex <= 35))
+			{	// Right Finger
+				Quat.Y *= -1.f;
+			}
+			else if (BoneIndex == 39)
+			{	// Left Hand
+				Quat.Z *= -1.f;
+			}
+			else if ((BoneIndex >= 36) && (BoneIndex <= 42))
+			{	// Left Arm and Thumb
+				float Y = Quat.Y;
+				float Z = Quat.Z;
+				Quat.Y = Z;
+				Quat.Z = Y;
+			}
+			else if ((BoneIndex >= 43) && (BoneIndex <= 58))
+			{	// Left Finger
+				Quat.Z *= -1.f;
+			}
+			else
+			{	// Left Leg, Hips, Spine, Neck, Head
+				float X = Quat.X;
+				float Y = Quat.Y;
+				float Z = Quat.Z;
+				Quat.X = Y;
+				Quat.Y = Z;
+				Quat.Z = -X;
+			}
+			break;
 		}
-		else if (BoneIndex == 16)
-		{	// Right Hand
-			Quat.Y *= -1.f;
-		}
-		else if ((BoneIndex >= 13) && (BoneIndex <= 19))
-		{	// Right Arm and Thumb
-			float Y = Quat.Y;
-			float Z = Quat.Z;
-			Quat.Y = -Z;
-			Quat.Z = -Y;
-		}
-		else if ((BoneIndex >= 20) && (BoneIndex <= 35))
-		{	// Right Finger
-			Quat.Y *= -1.f;
-		}
-		else if (BoneIndex == 39)
-		{	// Left Hand
-			Quat.Z *= -1.f;
-		}
-		else if ((BoneIndex >= 36) && (BoneIndex <= 42))
-		{	// Left Arm and Thumb
-			float Y = Quat.Y;
-			float Z = Quat.Z;
-			Quat.Y = Z;
-			Quat.Z = Y;
-		}
-		else if ((BoneIndex >= 43) && (BoneIndex <= 58))
-		{	// Left Finger
-			Quat.Z *= -1.f;
-		}
-		else
-		{	// Left Leg, Hips, Spine, Neck, Head
-			float X = Quat.X;
-			float Y = Quat.Y;
-			float Z = Quat.Z;
-			Quat.X = Y;
-			Quat.Y = Z;
-			Quat.Z = -X;
-		}
-		break;
-	}
-	}
-
+	}		
+	
 	Rotation = Quat.Rotator();
-
+	
 	// Add additional rotation
 	Rotation.Yaw += AddRotation.Yaw;
 	Rotation.Pitch += AddRotation.Pitch;
 	Rotation.Roll += AddRotation.Roll;
-
+	
 	return true;
 }
 
