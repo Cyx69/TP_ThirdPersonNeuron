@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\ThirdPersonNeuron.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{FDB31637-64AF-441F-A2B4-C5A7CAE9D2EF}</UniqueIdentifier>
+      <UniqueIdentifier>{F98AD931-E170-4219-9FE4-93668626287E}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\ThirdPersonNeuron.Target.cs">
       <Filter>Source</Filter>
@@ -12,7 +12,7 @@
       <Filter>Source</Filter>
     </None>
     <Filter Include="Config">
-      <UniqueIdentifier>{A0EBC909-2C29-475D-935E-57836D9FF981}</UniqueIdentifier>
+      <UniqueIdentifier>{8D1AF094-3F4A-4E9C-B6BB-1A7222DD9E55}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -29,15 +29,54 @@
     <None Include="..\..\Config\DefaultInput.ini">
       <Filter>Config</Filter>
     </None>
-    <Filter Include="Source\ThirdPersonNeuron">
-      <UniqueIdentifier>{C91A855C-3DF4-4AD7-9E19-6B3CCA60A40A}</UniqueIdentifier>
+    <Filter Include="Plugins">
+      <UniqueIdentifier>{85879B9E-CD91-4C1C-9768-DF5EF97F53B0}</UniqueIdentifier>
     </Filter>
-    <ClCompile Include="..\..\Source\ThirdPersonNeuron\NeuronBPFunctionLibrary.cpp">
-      <Filter>Source\ThirdPersonNeuron</Filter>
+    <Filter Include="Plugins\PerceptionNeuron">
+      <UniqueIdentifier>{7E5055A8-99C4-4F90-80F2-7E3BF5F66640}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Plugins\PerceptionNeuron\Source">
+      <UniqueIdentifier>{5D674274-D626-4D8C-83D0-51A69F01D12A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Plugins\PerceptionNeuron\Source\PerceptionNeuron">
+      <UniqueIdentifier>{092154DE-85EE-488C-A56A-EA7760EC9F04}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Plugins\PerceptionNeuron\Source\PerceptionNeuron\PerceptionNeuron.Build.cs">
+      <Filter>Plugins\PerceptionNeuron\Source\PerceptionNeuron</Filter>
+    </None>
+    <Filter Include="Plugins\PerceptionNeuron\Source\PerceptionNeuron\Private">
+      <UniqueIdentifier>{9F88427A-17D9-4D05-9E06-88843BB44DC7}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Plugins\PerceptionNeuron\Source\PerceptionNeuron\Private\PerceptionNeuron.cpp">
+      <Filter>Plugins\PerceptionNeuron\Source\PerceptionNeuron\Private</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\Source\ThirdPersonNeuron\NeuronBPFunctionLibrary.h">
-      <Filter>Source\ThirdPersonNeuron</Filter>
+    <ClCompile Include="..\..\Plugins\PerceptionNeuron\Source\PerceptionNeuron\Private\PerceptionNeuronBPLibrary.cpp">
+      <Filter>Plugins\PerceptionNeuron\Source\PerceptionNeuron\Private</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Plugins\PerceptionNeuron\Source\PerceptionNeuron\Private\PerceptionNeuronPrivatePCH.h">
+      <Filter>Plugins\PerceptionNeuron\Source\PerceptionNeuron\Private</Filter>
     </ClInclude>
+    <Filter Include="Plugins\PerceptionNeuron\Source\PerceptionNeuron\Public">
+      <UniqueIdentifier>{B0114A70-85BB-45A5-BF47-9B804697FA94}</UniqueIdentifier>
+    </Filter>
+    <ClInclude Include="..\..\Plugins\PerceptionNeuron\Source\PerceptionNeuron\Public\PerceptionNeuron.h">
+      <Filter>Plugins\PerceptionNeuron\Source\PerceptionNeuron\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\PerceptionNeuron\Source\PerceptionNeuron\Public\PerceptionNeuronBPLibrary.h">
+      <Filter>Plugins\PerceptionNeuron\Source\PerceptionNeuron\Public</Filter>
+    </ClInclude>
+    <None Include="..\..\Plugins\PerceptionNeuron\PerceptionNeuron.uplugin">
+      <Filter>Plugins\PerceptionNeuron</Filter>
+    </None>
+    <Filter Include="Plugins\PerceptionNeuron\Resources">
+      <UniqueIdentifier>{4414658E-1651-4B5B-8068-D32BC81229FD}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Plugins\PerceptionNeuron\Resources\Icon128.png">
+      <Filter>Plugins\PerceptionNeuron\Resources</Filter>
+    </None>
+    <Filter Include="Source\ThirdPersonNeuron">
+      <UniqueIdentifier>{AE41BB7B-22FB-463B-B243-9B97F0F754B3}</UniqueIdentifier>
+    </Filter>
     <None Include="..\..\Source\ThirdPersonNeuron\ThirdPersonNeuron.Build.cs">
       <Filter>Source\ThirdPersonNeuron</Filter>
     </None>
@@ -53,21 +92,15 @@
     <ClInclude Include="..\..\Source\ThirdPersonNeuron\ThirdPersonNeuronCharacter.h">
       <Filter>Source\ThirdPersonNeuron</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\Source\ThirdPersonNeuron\ThirdPersonNeuronGameMode.cpp">
-      <Filter>Source\ThirdPersonNeuron</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\ThirdPersonNeuron\ThirdPersonNeuronGameMode.h">
-      <Filter>Source\ThirdPersonNeuron</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\ThirdPersonNeuron\ThirdPersonNeuronController.h">
-      <Filter>Source\ThirdPersonNeuron</Filter>
-    </ClInclude>
+    <ClCompile Include="..\..\Plugins\PerceptionNeuron\Source\PerceptionNeuron\Private\PerceptionNeuronController.cpp">
+      <Filter>Plugins\PerceptionNeuron\Source\PerceptionNeuron\Private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\ThirdPersonNeuron\ThirdPersonNeuronController.cpp">
-      <Filter>Source\ThirdPersonNeuron</Filter>
-    </ClCompile>
+    <ClInclude Include="..\..\Plugins\PerceptionNeuron\Source\PerceptionNeuron\Public\PerceptionNeuronController.h">
+      <Filter>Plugins\PerceptionNeuron\Source\PerceptionNeuron\Public</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
