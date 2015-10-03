@@ -6,6 +6,6 @@ public class ThirdPersonNeuron : ModuleRules
 {
 	public ThirdPersonNeuron(TargetInfo Target)
 	{
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Sockets", "Networking" });
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
 	}
 }

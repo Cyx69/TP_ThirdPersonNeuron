@@ -100,6 +100,10 @@ https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=DYZEA9A3MLA
 
 VI. Greetings
 =============
+Special thanks to:
+- For sponsoring the plugin work
+  Benedikt Engelhard (be@benedikt-engelhard.de)
+
 Many thanks to:
 * Everybody which helped me to improve and develop this template further
 * Epic for providing the world best game engine for free

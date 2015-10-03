@@ -1,5 +1,7 @@
 List of changes:
 ================
+v0.3.0
+- Source code restructure: C++ code is now placed in a plugin to be more project independend.
 
 v0.2.0
 - Playback Controller added. 
