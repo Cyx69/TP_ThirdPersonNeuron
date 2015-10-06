@@ -4,7 +4,7 @@ v0.3.0
 - Source code restructure: C++ code is now placed in a plugin to be more project independend.
   This plugin can be used in any of your projects and there is no need to create a C++ project anymore.
   The binary plugin version 0.1.0 can be downloaded from here:
-  https://github.com/Cyx69/TP_ThirdPersonNeuron/archive/Perception_Neuron_Plugin_0.1.0.zip
+  https://github.com/Cyx69/TP_ThirdPersonNeuron/releases/download/v0.3.0/Perception_Neuron_Plugin_0.1.0.zip
 - Further comments and minor improvements
 
 v0.2.0
