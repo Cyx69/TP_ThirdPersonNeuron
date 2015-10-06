@@ -1,7 +1,6 @@
 List of changes:
 ================
 
-
 v0.1.0
 - Initial plugin version created.
-  (Based on Third Person Perception Neuron (TM) Template v0.2.0)
+  (Based and icluded in Third Person Perception Neuron (TM) Template v0.3.0)
