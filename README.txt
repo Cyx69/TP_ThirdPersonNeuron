@@ -56,6 +56,13 @@ II. Requirements
   or alternatively you can use my minimal BVH send server here:
   https://github.com/Cyx69/bvhsend/releases
 
+Note:
+-----
+If you don't want to use a C++ template, there is also a binary plugin.
+This plugin can be used in any of your projects without a need of using a C++ compiler.
+The binary plugin version 0.1.0 can be downloaded from here:
+https://github.com/Cyx69/TP_ThirdPersonNeuron/archive/Perception_Neuron_Plugin_0.1.0.zip
+
 
 III. Installation
 =================
