@@ -53,7 +53,7 @@ II. Requirements
   Unreal automatically compiles the code while opening the project for the first time.
   You can just close Visual Studio and save the changes after starting.
 * Axis Neuron SW Player (Free version is available here: https://neuronmocap.com/downloads)
-  or alternatively you can use my minimal BVH send server here:
+  or alternatively you can use my free minimal BVH send server here:
   https://github.com/Cyx69/bvhsend/releases
 
 Note:
@@ -92,7 +92,7 @@ Axis Neuron SW:
 
 Per default the template connects to 'localhost' (127.0.0.1) and to port 7001.
 You can change these settings in the Controller Blueprint if you want to use a separate PC or other ports.
-And you can add further controllers if you want to retrieve motion data from further suits or BVH server.
+And you can add further controllers if you want to retrieve motion data from additional suits or BVH server.
 
 
 V. Contact, Donation
