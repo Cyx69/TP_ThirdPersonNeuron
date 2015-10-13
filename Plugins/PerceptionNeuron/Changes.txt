@@ -1,6 +1,9 @@
 List of changes:
 ================
 
+v0.2.0
+- Fix a synchronization bug when using Neuron format
+
 v0.1.0
 - Initial plugin version created.
-  (Based and icluded in Third Person Perception Neuron (TM) Template v0.3.0)
+  (Based and included in Third Person Perception Neuron (TM) Template v0.3.0)
