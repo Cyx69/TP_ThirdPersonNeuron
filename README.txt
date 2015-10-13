@@ -3,7 +3,7 @@
                         UE4 First Person CPP Neuron Template
                         ====================================
 					
-                                      v0.3.0
+                                      v0.4.0
                            
                           Created by Heiko Fink aka Cyx
                                            

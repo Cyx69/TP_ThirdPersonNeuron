@@ -1,5 +1,8 @@
 List of changes:
 ================
+v0.4.0
+- Add Plugin v0.2.0
+
 v0.3.0
 - Source code restructure: C++ code is now placed in a plugin to be more project independend.
   This plugin can be used in any of your projects and there is no need to create a C++ project anymore.
