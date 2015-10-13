@@ -98,7 +98,7 @@ void APerceptionNeuronController::Tick(float DeltaTime)
 					// 0 Avatarname 0.00 0.00 ... 0.00 ||
 					for (i = j = k = 0; i < BytesRead - 2; i++)
 					{
-						if ((Data[i] == '0') && (Data[i + 1] == ' ') && ((Data[i + 2] < '0') || (Data[i + 2] > '9') || (Data[i + 2] == '-')))
+						if ((Data[i] == '0') && (Data[i + 1] == ' ') && ((Data[i + 2] < '0') || (Data[i + 2] > '9')) && (Data[i + 2] != '-'))
 						{
 							bMotionLineBeginFound = true;
 							// Skip Avatarname
