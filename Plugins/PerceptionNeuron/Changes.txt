@@ -2,6 +2,8 @@ List of changes:
 ================
 
 v0.2.0
+- Better support for custom skeletons:
+  Bone coordinate system can now be mapped in blueprint.
 - Fix a synchronization bug when using Neuron format
 
 v0.1.0

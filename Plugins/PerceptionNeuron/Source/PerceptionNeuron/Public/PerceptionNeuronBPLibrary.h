@@ -38,7 +38,8 @@ enum class ENeuronSkeletonEnum : uint8
 	VE_None 		UMETA(DisplayName = "None"),		// Map to nothing, use translation and rotation as it is
 	VE_Neuron 		UMETA(DisplayName = "Neuron"),		// Map to Neuron BVH skeleton
 	VE_TPP_Hero		UMETA(DisplayName = "TPP_Hero"),	// Map to Hero_TPP, Old blue Unreal default skeleton with T-Pose
-	VE_Mannequin	UMETA(DisplayName = "Mannequin")	// Map to Mannequin, New grey Unreal default skeleton with A-Pose
+	VE_Mannequin	UMETA(DisplayName = "Mannequin"),	// Map to Mannequin, New grey Unreal default skeleton with A-Pose
+	VE_Map			UMETA(DisplayName = "Map")			// Map to configured bone map
 };
 
 UENUM(BlueprintType)
@@ -48,6 +49,18 @@ enum class ENeuronMotionLineFormatEnum : uint8
 	VE_Neuron 		UMETA(DisplayName = "Neuron")		// Axis Neuron BVH live format (with character name at beginning and || at line ending)
 };
 
+UENUM(BlueprintType)
+enum class ENeuronXYZEnum : uint8
+{
+	VE_X			UMETA(DisplayName = "X"),
+	VE_Y			UMETA(DisplayName = "Y"),
+	VE_Z			UMETA(DisplayName = "Z"),
+	VE_NX			UMETA(DisplayName = "-X"),
+	VE_NY			UMETA(DisplayName = "-Y"),
+	VE_NZ	 		UMETA(DisplayName = "-Z")	
+};
+
+
 UCLASS()
 class UPerceptionNeuronBPLibrary : public UBlueprintFunctionLibrary
 {
@@ -55,16 +68,23 @@ class UPerceptionNeuronBPLibrary : public UBlueprintFunctionLibrary
 
 	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Init Neuron", Keywords = "Init and read BVH reference skeleton"))
 		static bool NeuronInit(APerceptionNeuronController *Controller, const FString BVHFileName = FString(TEXT("axis.bvh")));
+	
 	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Connect Neuron", Keywords = "Connect to Axis Neuron"))
 		static bool NeuronConnect(APerceptionNeuronController *Controller, const FString HostName = FString(TEXT("127.0.0.1")), int32 Port = 7001, bool bReference = false, bool bDisplacement = true, ENeuronMotionLineFormatEnum MotionLineFormat = ENeuronMotionLineFormatEnum::VE_Neuron);
 	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Disconnect Neuron", Keywords = "Disconnect from Axis Neuron"))
 		static bool NeuronDisconnect(APerceptionNeuronController *Controller);
+
 	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Play BVH File", Keywords = "Play a BVH file"))
 		static bool NeuronPlay(APerceptionNeuronController *Controller, FString BVHFileName = FString(TEXT("test.bvh")), bool bEndless = true, bool bReference = false, bool bDisplacement = true, ENeuronMotionLineFormatEnum MotionLineFormat = ENeuronMotionLineFormatEnum::VE_Standard);
 	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Pause playing BVH File", Keywords = "Play a BVH file"))
 		static bool NeuronPause(APerceptionNeuronController *Controller, bool bPause = false);
+
 	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Read Neuron Motion", Keywords = "Read motion data from Axis Neuron"))
 		static bool NeuronReadMotion(APerceptionNeuronController *Controller, FVector& Translation, FRotator& Rotation, FVector AdditionalTranslation, FRotator AdditionalRotation, int32 BoneIndex = 0, ENeuronSkeletonEnum skeletontype = ENeuronSkeletonEnum::VE_Neuron);
+
+	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Map Bone Coordinates", Keywords = "Map a bone coordinate system"))
+		static bool NeuronBoneMap(APerceptionNeuronController *Controller, int32 BoneIndex, ENeuronXYZEnum X, ENeuronXYZEnum Y, ENeuronXYZEnum Z);
+
 	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Get Local Bone Rotation", Keywords = "Get local bone rotation from mesh"))
 		static bool NeuronGetLocalBoneRotation(USkeletalMeshComponent *Mesh, FRotator& Rotation, int32 BoneIndex = 0);
 	UFUNCTION(BlueprintPure, Category = "Perception Neuron", meta = (DisplayName = "Negate Rotation", CompactNodeTitle = "Neg", Keywords = "Negate Yaw, Pitch and Roll in rotation vector"))

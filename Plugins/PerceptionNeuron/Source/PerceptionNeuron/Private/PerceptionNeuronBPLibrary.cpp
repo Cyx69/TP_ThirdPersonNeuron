@@ -214,6 +214,15 @@ bool UPerceptionNeuronBPLibrary::NeuronReadMotion(APerceptionNeuronController *C
 				// Ignore other bones
 				break;
 			}
+			case ENeuronSkeletonEnum::VE_Map: // Map to configured bone map
+			{
+				// Map translation with configured Bonemap
+				float Map[3] = { X, Y, Z };
+
+				Translation = FVector(Map[Controller->Bonemap[BoneIndex].XYZ[0]] * Controller->Bonemap[BoneIndex].Sign[0],
+									  Map[Controller->Bonemap[BoneIndex].XYZ[1]] * Controller->Bonemap[BoneIndex].Sign[1],
+									  Map[Controller->Bonemap[BoneIndex].XYZ[2]] * Controller->Bonemap[BoneIndex].Sign[2]);				
+			}
 		}
 	}
 	else
@@ -390,6 +399,17 @@ bool UPerceptionNeuronBPLibrary::NeuronReadMotion(APerceptionNeuronController *C
 			}
 			break;
 		}
+		case ENeuronSkeletonEnum::VE_Map: // Map to configured bone map
+		{
+			// Map Quat.X/Y/Z with configured Bonemap				
+			float Map[3] = { Quat.X, Quat.Y, Quat.Z };
+
+			Quat.X = Map[Controller->Bonemap[BoneIndex].XYZ[0]] * Controller->Bonemap[BoneIndex].Sign[0];
+			Quat.Y = Map[Controller->Bonemap[BoneIndex].XYZ[1]] * Controller->Bonemap[BoneIndex].Sign[1];
+			Quat.Z = Map[Controller->Bonemap[BoneIndex].XYZ[2]] * Controller->Bonemap[BoneIndex].Sign[2];
+
+			break;
+		}
 	}		
 	
 	// Map to Rotator
@@ -401,7 +421,42 @@ bool UPerceptionNeuronBPLibrary::NeuronReadMotion(APerceptionNeuronController *C
 	Rotation.Roll += AddRotation.Roll;
 	Rotation.Normalize();
 
-	
+	return true;
+}
+
+// Map a bone coordinate system
+bool UPerceptionNeuronBPLibrary::NeuronBoneMap(APerceptionNeuronController *Controller, int32 BoneIndex, ENeuronXYZEnum X, ENeuronXYZEnum Y, ENeuronXYZEnum Z)
+{
+	if (Controller == NULL)
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Controller is invalid.")));
+		}
+		return false;
+	}
+	else if (BoneIndex > Controller->BoneNr)
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Boneindex %d exceeds maximum available bones %d."), BoneIndex, Controller->BoneNr));
+		}
+		return false;
+	}
+
+	int32 XX = (int32)X;
+	int32 YY = (int32)Y;
+	int32 ZZ = (int32)Z;
+
+	Controller->Bonemap[BoneIndex].XYZ[0] = XX > 2 ? XX - 3 : XX;
+	Controller->Bonemap[BoneIndex].Sign[0] = XX > 2 ? -1 : 1;
+
+	Controller->Bonemap[BoneIndex].XYZ[1] = YY > 2 ? YY - 3 : YY;
+	Controller->Bonemap[BoneIndex].Sign[1] = YY > 2 ? -1 : 1;
+
+	Controller->Bonemap[BoneIndex].XYZ[2] = ZZ > 2 ? ZZ - 3 : ZZ;
+	Controller->Bonemap[BoneIndex].Sign[2] = ZZ > 2 ? -1 : 1;
+
 	return true;
 }
 

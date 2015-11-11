@@ -93,6 +93,16 @@ public:
 	int32 BoneNr = 0;		// How many bones has above Skeleton array
 
 
+	// Map bone coordinate system (Used for VE_Map)
+	typedef struct BoneMap
+	{
+		int32 XYZ[3];		// Map XYZ => X'Y'Z'
+		int32 Sign[3];		// Map direction 1 or -1
+	} BONEMAP;
+
+	BONEMAP Bonemap[MAXBONES];
+
+
 	//
 	// BVH Player
 	//
