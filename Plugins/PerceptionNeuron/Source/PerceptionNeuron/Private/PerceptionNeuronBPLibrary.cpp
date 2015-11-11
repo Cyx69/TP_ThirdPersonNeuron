@@ -399,6 +399,7 @@ bool UPerceptionNeuronBPLibrary::NeuronReadMotion(APerceptionNeuronController *C
 	Rotation.Yaw += AddRotation.Yaw;
 	Rotation.Pitch += AddRotation.Pitch;
 	Rotation.Roll += AddRotation.Roll;
+	Rotation.Normalize();
 
 	
 	return true;
