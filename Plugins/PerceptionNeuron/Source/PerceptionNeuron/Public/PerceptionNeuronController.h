@@ -25,7 +25,7 @@
 enum ChannelOrderEnum { XYZ, ZXY, YXZ }; // 123, 312, 213
 
 // Supported motion line formats
-enum MotionLineFormatEnum { Standard, Neuron};
+enum MotionLineFormatEnum { Standard, Neuron };
 
 UCLASS()
 class APerceptionNeuronController : public AActor

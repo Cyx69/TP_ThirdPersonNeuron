@@ -21,7 +21,6 @@ UPerceptionNeuronBPLibrary::UPerceptionNeuronBPLibrary(const FObjectInitializer&
 
 }
 
-
 // Init and read BVH reference skeleton
 bool UPerceptionNeuronBPLibrary::NeuronInit(APerceptionNeuronController *Controller, FString BVHFileName)
 {
@@ -393,12 +392,14 @@ bool UPerceptionNeuronBPLibrary::NeuronReadMotion(APerceptionNeuronController *C
 		}
 	}		
 	
+	// Map to Rotator
 	Rotation = Quat.Rotator();
-	
+
 	// Add additional rotation
 	Rotation.Yaw += AddRotation.Yaw;
 	Rotation.Pitch += AddRotation.Pitch;
 	Rotation.Roll += AddRotation.Roll;
+
 	
 	return true;
 }
