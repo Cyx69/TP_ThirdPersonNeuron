@@ -139,7 +139,7 @@ bool UPerceptionNeuronBPLibrary::NeuronReadMotion(APerceptionNeuronController *C
 	{
 		bExit = true;
 	}
-	else if (BoneIndex > Controller->BoneNr)
+	else if (BoneIndex >= Controller->BoneNr)
 	{
 		if (GEngine)
 		{
@@ -435,7 +435,7 @@ bool UPerceptionNeuronBPLibrary::NeuronBoneMap(APerceptionNeuronController *Cont
 		}
 		return false;
 	}
-	else if (BoneIndex > Controller->BoneNr)
+	else if (BoneIndex >= Controller->BoneNr)
 	{
 		if (GEngine)
 		{
