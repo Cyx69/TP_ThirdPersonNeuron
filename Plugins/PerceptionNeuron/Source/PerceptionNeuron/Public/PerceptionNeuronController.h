@@ -18,11 +18,9 @@
 #include "Sockets.h"
 #include "SocketSubsystem.h"
 #include "GameFramework/Actor.h"
+#include "PerceptionNeuronMath.h"
 #include "PerceptionNeuronController.generated.h"
 
-
-// Supported rotation matrices
-enum ChannelOrderEnum { XYZ, XZY, YXZ, YZX, ZXY, ZYX };
 
 // Supported motion line formats
 enum MotionLineFormatEnum { Standard, Neuron };

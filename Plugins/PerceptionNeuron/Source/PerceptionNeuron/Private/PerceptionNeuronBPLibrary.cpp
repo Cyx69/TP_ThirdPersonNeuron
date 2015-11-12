@@ -13,6 +13,7 @@
 #include "PerceptionNeuronPrivatePCH.h"
 #include "PerceptionNeuronBPLibrary.h"
 #include "PerceptionNeuronController.h"
+#include "PerceptionNeuronMath.h"
 
 
 UPerceptionNeuronBPLibrary::UPerceptionNeuronBPLibrary(const FObjectInitializer& ObjectInitializer) 
@@ -246,122 +247,10 @@ bool UPerceptionNeuronBPLibrary::NeuronReadMotion(APerceptionNeuronController *C
 	float YR = Controller->MotionLine[(BoneIndex * FloatsPerBone) + Controller->Skeleton[BoneIndex].YRot] * PI / 180.f;
 	float ZR = Controller->MotionLine[(BoneIndex * FloatsPerBone) + Controller->Skeleton[BoneIndex].ZRot] * PI / 180.f;
 
-	float SX = sin(XR);
-	float CX = cos(XR);
-	float SY = sin(YR);
-	float CY = cos(YR);
-	float SZ = sin(ZR);
-	float CZ = cos(ZR);
+	// Calculate Rotation Matrix and map to Quaternion
+	FQuat Quat = CalculateQuat(XR, YR, ZR, Controller->Skeleton[BoneIndex].RotOrder);
 
-	FMatrix RotMatrix;
-	switch (Controller->Skeleton[BoneIndex].RotOrder)
-	{
-		case XYZ:
-		{
-			RotMatrix.M[0][0] = CY*CZ;
-			RotMatrix.M[0][1] = -CY*SZ;
-			RotMatrix.M[0][2] = SY;
-			RotMatrix.M[0][3] = 0;
-			RotMatrix.M[1][0] = CZ*SX*SY + CX*SZ;
-			RotMatrix.M[1][1] = CX*CZ - SX*SY*SZ;
-			RotMatrix.M[1][2] = -CY*SX;
-			RotMatrix.M[1][3] = 0;
-			RotMatrix.M[2][0] = SX*SZ - CX*CZ*SY;
-			RotMatrix.M[2][1] = CZ*SX + CX*SY*SZ;
-			RotMatrix.M[2][2] = CX*CY;
-			RotMatrix.M[2][3] = 0;
-			break;
-		}
-		case XZY:
-		{
-			RotMatrix.M[0][0] = CY*CZ;
-			RotMatrix.M[0][1] = -SZ;
-			RotMatrix.M[0][2] = CZ*SY;
-			RotMatrix.M[0][3] = 0;
-			RotMatrix.M[1][0] = SX*SY + CX*CY*SZ;
-			RotMatrix.M[1][1] = CX*CZ;
-			RotMatrix.M[1][2] = CX*SY*SZ - CY*SX;
-			RotMatrix.M[1][3] = 0;
-			RotMatrix.M[2][0] = CY*SX*SZ - CX*SY;
-			RotMatrix.M[2][1] = CZ*SX;
-			RotMatrix.M[2][2] = CX*CY + SX*SY*SZ;
-			RotMatrix.M[2][3] = 0;
-			break;
-		}
-		case YXZ:
-		{
-			RotMatrix.M[0][0] = CY*CZ + SX*SY*SZ;
-			RotMatrix.M[0][1] = CZ*SX*SY - CY*SZ;
-			RotMatrix.M[0][2] = CX*SY;
-			RotMatrix.M[0][3] = 0;
-			RotMatrix.M[1][0] = CX*SZ;
-			RotMatrix.M[1][1] = CX*CZ;
-			RotMatrix.M[1][2] = -SX;
-			RotMatrix.M[1][3] = 0;
-			RotMatrix.M[2][0] = CY*SX*SZ - CZ*SY;
-			RotMatrix.M[2][1] = CY*CZ*SX + SY*SZ;
-			RotMatrix.M[2][2] = CX*CY;
-			RotMatrix.M[2][3] = 0;
-			break;
-		}
-		case YZX:
-		{
-			RotMatrix.M[0][0] = CY*CZ;
-			RotMatrix.M[0][1] = SX*SY - CX*CY*SZ;
-			RotMatrix.M[0][2] = CX*SY + CY*SX*SZ;
-			RotMatrix.M[0][3] = 0;
-			RotMatrix.M[1][0] = SZ;
-			RotMatrix.M[1][1] = CX*CZ;
-			RotMatrix.M[1][2] = -CZ*SX;
-			RotMatrix.M[1][3] = 0;
-			RotMatrix.M[2][0] = -CZ*SY;
-			RotMatrix.M[2][1] = CY*SX + CX*SY*SZ;
-			RotMatrix.M[2][2] = CX*CY - SX*SY*SZ;
-			RotMatrix.M[2][3] = 0;
-			break;
-		}
-		case ZXY:
-		{
-			RotMatrix.M[0][0] = CY*CZ - SX*SY*SZ;
-			RotMatrix.M[0][1] = -CX*SZ;
-			RotMatrix.M[0][2] = CZ*SY + CY*SX*SZ;
-			RotMatrix.M[0][3] = 0;
-			RotMatrix.M[1][0] = CZ*SX*SY + CY*SZ;
-			RotMatrix.M[1][1] = CX*CZ;
-			RotMatrix.M[1][2] = SY*SZ - CY*CZ*SX;
-			RotMatrix.M[1][3] = 0;
-			RotMatrix.M[2][0] = -CX*SY;
-			RotMatrix.M[2][1] = SX;
-			RotMatrix.M[2][2] = CX*CY;
-			RotMatrix.M[2][3] = 0;
-			break;
-		}
-		default:
-		case ZYX:
-		{
-			RotMatrix.M[0][0] = CY*CZ;
-			RotMatrix.M[0][1] = CZ*SX*SY - CX*SZ;
-			RotMatrix.M[0][2] = CX*CZ*SY + SX*SZ;
-			RotMatrix.M[0][3] = 0;
-			RotMatrix.M[1][0] = CY*SZ;
-			RotMatrix.M[1][1] = CX*CZ + SX*SY*SZ;
-			RotMatrix.M[1][2] = CX*SY*SZ - CZ*SX;
-			RotMatrix.M[1][3] = 0;
-			RotMatrix.M[2][0] = -SY;
-			RotMatrix.M[2][1] = CY*SX;
-			RotMatrix.M[2][2] = CX*CY;
-			RotMatrix.M[2][3] = 0;
-			break;
-		}
-	}
-
-	RotMatrix.M[3][0] = 0;
-	RotMatrix.M[3][1] = 0;
-	RotMatrix.M[3][2] = 0;
-	RotMatrix.M[3][3] = 1;
-
-	// Rotation Matrix => Quaternion and map to each bone coordinate systems dependend on skeleton type
-	FQuat Quat = RotMatrix.ToQuat();
+	// Map to each bone coordinate systems dependend on skeleton type
 	switch (SkeletonType)
 	{
 		case ENeuronSkeletonEnum::VE_Neuron:  // Neuron BVH skeleton
