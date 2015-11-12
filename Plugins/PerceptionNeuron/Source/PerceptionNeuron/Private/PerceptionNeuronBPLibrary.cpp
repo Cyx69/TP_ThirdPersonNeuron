@@ -34,7 +34,7 @@ bool UPerceptionNeuronBPLibrary::NeuronInit(APerceptionNeuronController *Control
 		return false;
 	}
 
-	if (Controller->ParseBVHReferenceFile(BVHFileName) != true)
+	if (Controller->Skeleton.ParseBVHReferenceFile(BVHFileName) != true)
 		return false;
 
 	return true;
@@ -140,11 +140,11 @@ bool UPerceptionNeuronBPLibrary::NeuronReadMotion(APerceptionNeuronController *C
 	{
 		bExit = true;
 	}
-	else if (BoneIndex >= Controller->BoneNr)
+	else if (BoneIndex >= Controller->Skeleton.BoneNr)
 	{
 		if (GEngine)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Boneindex %d exceeds maximum available bones %d."), BoneIndex, Controller->BoneNr));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Boneindex %d exceeds maximum available bones %d."), BoneIndex, Controller->Skeleton.BoneNr));
 		}
 		bExit = true;
 	}
@@ -174,9 +174,9 @@ bool UPerceptionNeuronBPLibrary::NeuronReadMotion(APerceptionNeuronController *C
 	if (Controller->bDisplacement == true)
 	{
 		// Read translation values and remove BVH reference position
-		float X = Controller->MotionLine[(BoneIndex * FloatsPerBone) + Controller->Skeleton[BoneIndex].XPos] - Controller->Skeleton[BoneIndex].Offset[0];
-		float Y = Controller->MotionLine[(BoneIndex * FloatsPerBone) + Controller->Skeleton[BoneIndex].YPos] - Controller->Skeleton[BoneIndex].Offset[1];
-		float Z = Controller->MotionLine[(BoneIndex * FloatsPerBone) + Controller->Skeleton[BoneIndex].ZPos] - Controller->Skeleton[BoneIndex].Offset[2];
+		float X = Controller->MotionLine[(BoneIndex * FloatsPerBone) + Controller->Skeleton.Bones[BoneIndex].XPos] - Controller->Skeleton.Bones[BoneIndex].Offset[0];
+		float Y = Controller->MotionLine[(BoneIndex * FloatsPerBone) + Controller->Skeleton.Bones[BoneIndex].YPos] - Controller->Skeleton.Bones[BoneIndex].Offset[1];
+		float Z = Controller->MotionLine[(BoneIndex * FloatsPerBone) + Controller->Skeleton.Bones[BoneIndex].ZPos] - Controller->Skeleton.Bones[BoneIndex].Offset[2];
 
 		// Map BVH right hand system to local bone coordinate system
 		switch (SkeletonType)
@@ -225,7 +225,7 @@ bool UPerceptionNeuronBPLibrary::NeuronReadMotion(APerceptionNeuronController *C
 									  Map[Controller->Bonemap[BoneIndex].XYZ[2]] * Controller->Bonemap[BoneIndex].Sign[2]);				
 			}
 		}
-	}
+	} 
 	else
 	{
 		Translation.X = Translation.Y = Translation.Z = 0;
@@ -243,12 +243,12 @@ bool UPerceptionNeuronBPLibrary::NeuronReadMotion(APerceptionNeuronController *C
 	//
 
 	// Read rotation values and map to pitch, yaw, roll (y, z, x)
-	float XR = Controller->MotionLine[(BoneIndex * FloatsPerBone) + Controller->Skeleton[BoneIndex].XRot] * PI / 180.f;
-	float YR = Controller->MotionLine[(BoneIndex * FloatsPerBone) + Controller->Skeleton[BoneIndex].YRot] * PI / 180.f;
-	float ZR = Controller->MotionLine[(BoneIndex * FloatsPerBone) + Controller->Skeleton[BoneIndex].ZRot] * PI / 180.f;
+	float XR = Controller->MotionLine[(BoneIndex * FloatsPerBone) + Controller->Skeleton.Bones[BoneIndex].XRot] * PI / 180.f;
+	float YR = Controller->MotionLine[(BoneIndex * FloatsPerBone) + Controller->Skeleton.Bones[BoneIndex].YRot] * PI / 180.f;
+	float ZR = Controller->MotionLine[(BoneIndex * FloatsPerBone) + Controller->Skeleton.Bones[BoneIndex].ZRot] * PI / 180.f;
 
 	// Calculate Rotation Matrix and map to Quaternion
-	FQuat Quat = CalculateQuat(XR, YR, ZR, Controller->Skeleton[BoneIndex].RotOrder);
+	FQuat Quat = CalculateQuat(XR, YR, ZR, Controller->Skeleton.Bones[BoneIndex].RotOrder);
 
 	// Map to each bone coordinate systems dependend on skeleton type
 	switch (SkeletonType)
@@ -372,11 +372,11 @@ bool UPerceptionNeuronBPLibrary::NeuronBoneMap(APerceptionNeuronController *Cont
 		}
 		return false;
 	}
-	else if (BoneIndex >= Controller->BoneNr)
+	else if (BoneIndex >= Controller->Skeleton.BoneNr)
 	{
 		if (GEngine)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Boneindex %d exceeds maximum available bones %d."), BoneIndex, Controller->BoneNr));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Boneindex %d exceeds maximum available bones %d."), BoneIndex, Controller->Skeleton.BoneNr));
 		}
 		return false;
 	}

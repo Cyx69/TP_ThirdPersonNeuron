@@ -166,7 +166,7 @@ void APerceptionNeuronController::Tick(float DeltaTime)
 								if (bReference == false)
 									FloatsPerReference = 0;
 								// Check if empty spaces matches bone count
-								if (t == ((BoneNr * FloatsPerBone) + FloatsPerReference - 1))
+								if (t == ((Skeleton.BoneNr * FloatsPerBone) + FloatsPerReference - 1))
 								{
 									k = i;
 									break;
@@ -230,115 +230,6 @@ void APerceptionNeuronController::Tick(float DeltaTime)
 	} // End bConnected
 
 
-}
-
-bool APerceptionNeuronController::ParseBVHReferenceFile(FString BVHFileName)
-{
-	// Load BVH Reference file
-	TArray<FString> Lines;
-	if (FFileHelper::LoadANSITextFileToStrings(*(FPaths::GameDir() + FString("Content/") + BVHFileName), NULL, Lines) != true)
-	{
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Could not load BVH file:%s"), *(FPaths::GameDir() + FString("Content/") + BVHFileName)));
-		}
-		return false;
-	}
-
-	// Parse BVH file and get bone names, offsets and channels
-	int32 bone = 0;
-	bool  bToggle = false;
-
-	for (int32 i = 0; i < Lines.Num(); i++)
-	{
-		Lines[i].Trim();
-		if ((Lines[i].StartsWith(TEXT("ROOT"), ESearchCase::IgnoreCase) == true) ||
-			(Lines[i].StartsWith(TEXT("JOINT"), ESearchCase::IgnoreCase) == true))
-		{
-			TArray<FString> Words;
-			if (Lines[i].ParseIntoArray(Words, TEXT(" "), false) >= 2)
-			{
-				Skeleton[bone].Name = Words[1];
-				bToggle = true;
-			}
-		}
-		else if (Lines[i].StartsWith(TEXT("OFFSET"), ESearchCase::IgnoreCase) == true)
-		{
-			if (bToggle == true)	// Ignore additional offsets from "End Site"
-			{
-				TArray<FString> Words;
-				if (Lines[i].ParseIntoArray(Words, TEXT(" "), false) >= 4)
-				{
-					Skeleton[bone].Offset[0] = FCString::Atof(*Words[1]);
-					Skeleton[bone].Offset[1] = FCString::Atof(*Words[2]);
-					Skeleton[bone].Offset[2] = FCString::Atof(*Words[3]);
-					bToggle = false;
-				}
-			}
-		}
-		else if (Lines[i].StartsWith(TEXT("CHANNELS"), ESearchCase::IgnoreCase) == true)
-		{
-			TArray<FString> Words;
-			if (Lines[i].ParseIntoArray(Words, TEXT(" "), false) >= 4)
-			{
-				Skeleton[bone].ChannelCount = FCString::Atoi(*Words[1]);
-				if (Skeleton[bone].ChannelCount != 6)
-				{
-					if (GEngine)
-					{
-						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Channelcount must be 6 on bone:%u"), bone));
-					}
-					return false;
-				}
-				Skeleton[bone].XPos = Skeleton[bone].YPos = Skeleton[bone].ZPos = 0;
-				Skeleton[bone].XRot = Skeleton[bone].YRot = Skeleton[bone].ZRot = 0;
-				for (int32 j = 0; j < Skeleton[bone].ChannelCount; j++)
-				{
-					// Detect channel order
-					// E.g.: Xposition Yposition Zposition Xrotation Yrotation Zrotation
-					if (Words[j + 2].StartsWith(TEXT("Xposition"), ESearchCase::IgnoreCase) == true)
-						Skeleton[bone].XPos = j;
-					else if (Words[j + 2].StartsWith(TEXT("Yposition"), ESearchCase::IgnoreCase) == true)
-						Skeleton[bone].YPos = j;
-					else if (Words[j + 2].StartsWith(TEXT("Zposition"), ESearchCase::IgnoreCase) == true)
-						Skeleton[bone].ZPos = j;
-					else if (Words[j + 2].StartsWith(TEXT("Xrotation"), ESearchCase::IgnoreCase) == true)
-						Skeleton[bone].XRot = j;
-					else if (Words[j + 2].StartsWith(TEXT("Yrotation"), ESearchCase::IgnoreCase) == true)
-						Skeleton[bone].YRot = j;
-					else if (Words[j + 2].StartsWith(TEXT("Zrotation"), ESearchCase::IgnoreCase) == true)
-						Skeleton[bone].ZRot = j;
-				}
-				// Calculate rotation order
-				if ((Skeleton[bone].XRot < Skeleton[bone].YRot) && (Skeleton[bone].YRot < Skeleton[bone].ZRot)) // e.g. 123
-					Skeleton[bone].RotOrder = XYZ;
-				else if ((Skeleton[bone].XRot < Skeleton[bone].ZRot) && (Skeleton[bone].ZRot < Skeleton[bone].YRot)) // e.g. 132
-					Skeleton[bone].RotOrder = XZY;
-				else if ((Skeleton[bone].YRot < Skeleton[bone].XRot) && (Skeleton[bone].XRot < Skeleton[bone].ZRot)) // e.g. 213
-					Skeleton[bone].RotOrder = YXZ;
-				else if ((Skeleton[bone].YRot < Skeleton[bone].ZRot) && (Skeleton[bone].ZRot < Skeleton[bone].XRot)) // e.g. 231
-					Skeleton[bone].RotOrder = YZX;
-				else if ((Skeleton[bone].ZRot < Skeleton[bone].XRot) && (Skeleton[bone].XRot < Skeleton[bone].YRot)) // e.g. 312
-					Skeleton[bone].RotOrder = ZXY;
-				else 
-					Skeleton[bone].RotOrder = ZYX;
-
-				if (bone >= MAXBONES)
-				{
-					if (GEngine)
-					{
-						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Too much bones in BVH file:%u"), bone));
-					}
-					return false;
-				}
-				bone++;
-			}
-		}
-	} // end of for
-
-	BoneNr = bone;
-
-	return true;
 }
 
 // Connect to BVH server (for e.g. Axis Neuron SW)

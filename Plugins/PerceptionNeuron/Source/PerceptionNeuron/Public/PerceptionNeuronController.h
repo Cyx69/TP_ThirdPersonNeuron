@@ -18,7 +18,7 @@
 #include "Sockets.h"
 #include "SocketSubsystem.h"
 #include "GameFramework/Actor.h"
-#include "PerceptionNeuronMath.h"
+#include "PerceptionNeuronBVHSkeleton.h"
 #include "PerceptionNeuronController.generated.h"
 
 
@@ -62,8 +62,7 @@ public:
 	bool bDisplacement = true;		// BVH server sends displacement (translation) infos
 	MotionLineFormatEnum MotionLineFormat = Neuron;	// Which motion line format is used by the BVH server?
 
-#define MAXBONES	100
-#define MAXFLOATS	MAXBONES * 6	// 3 for x,y,z translation and 3 for x,y,z rotation
+#define MAXFLOATS	MAXBONES * 6	// 3 for x,y,z translation and 3 for x,y,z rotation	
 	float MotionLine[MAXFLOATS];	// Array of floats with last motion line read
 	int32 FloatCount = 0;			// How many floats did we read into MotionLine array
 private:
@@ -71,25 +70,10 @@ private:
 
 
 	//
-	// BVH Reference File
+	// BVH Reference Skeleton
 	//
 public:
-	bool ParseBVHReferenceFile(FString BVHFileName);
-
-	typedef struct Bone
-	{
-		FString Name;		// Name of bone
-		float Offset[3];	// x,y,z translation offset
-		int32 ChannelCount; // Should be 6
-		// Channel positions in motion line
-		int32 XPos, YPos, ZPos;
-		int32 XRot, YRot, ZRot;
-		ChannelOrderEnum RotOrder;
-	} BONE;
-
-	BONE Skeleton[MAXBONES];
-	int32 BoneNr = 0;		// How many bones has above Skeleton array
-
+	PerceptionNeuronBVHSkeleton Skeleton;
 
 	// Map bone coordinate system (Used for VE_Map)
 	typedef struct BoneMap
