@@ -94,7 +94,7 @@ V. Contact, Donation
 Heiko Fink aka Cyx
 EMail: hfinkdeletemenospam@web.de
 
-If you find the template or parts of it useful, please support me and
+If you find the plugin or parts of it useful, please support me and
 the further development and make a donation here:
 https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=DYZEA9A3MLA5Y
 
@@ -106,7 +106,7 @@ Special thanks to:
   Benedikt Engelhard (be@benedikt-engelhard.de)
 
 Many thanks to:
-* Everybody which helped me to improve and develop this template further
+* Everybody which helped me to improve and develop this plugin further
 * Epic for providing the world best game engine for free
 * Noitom for providing us Kickstarter Backers a motion capture suit for such an affordable price
 * Blender Foundation for developing one of the best open source tools out there
