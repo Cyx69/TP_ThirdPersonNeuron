@@ -66,27 +66,31 @@ class UPerceptionNeuronBPLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_UCLASS_BODY()
 
-	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Init Neuron", Keywords = "Init and read BVH reference skeleton"))
+	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Init Neuron", ToolTip = "Init and read BVH reference skeleton"))
 		static bool NeuronInit(APerceptionNeuronController *Controller, const FString BVHFileName = FString(TEXT("axis.bvh")));
 	
-	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Connect Neuron", Keywords = "Connect to Axis Neuron"))
+	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Connect Neuron", ToolTip = "Connect to Axis Neuron"))
 		static bool NeuronConnect(APerceptionNeuronController *Controller, const FString HostName = FString(TEXT("127.0.0.1")), int32 Port = 7001, bool bReference = false, bool bDisplacement = true, ENeuronMotionLineFormatEnum MotionLineFormat = ENeuronMotionLineFormatEnum::VE_Neuron);
-	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Disconnect Neuron", Keywords = "Disconnect from Axis Neuron"))
+	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Disconnect Neuron", ToolTip = "Disconnect from Axis Neuron Player."))
 		static bool NeuronDisconnect(APerceptionNeuronController *Controller);
 
-	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Play BVH File", Keywords = "Play a BVH file"))
+	// Player functions
+	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Play BVH File", ToolTip = "Play a local stored BVH file."))
 		static bool NeuronPlay(APerceptionNeuronController *Controller, FString BVHFileName = FString(TEXT("test.bvh")), bool bEndless = true, bool bReference = false, bool bDisplacement = true, ENeuronMotionLineFormatEnum MotionLineFormat = ENeuronMotionLineFormatEnum::VE_Standard);
-	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Pause playing BVH File", Keywords = "Play a BVH file"))
+	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Pause playing BVH File", ToolTip = "Pause playing a local stored BVH file"))
 		static bool NeuronPause(APerceptionNeuronController *Controller, bool bPause = false);
 
-	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Read Neuron Motion", Keywords = "Read motion data from Axis Neuron"))
+	// Read motion function
+	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Read Neuron Motion", ToolTip = "Read incoming motion data for one bone."))
 		static bool NeuronReadMotion(APerceptionNeuronController *Controller, FVector& Translation, FRotator& Rotation, FVector AdditionalTranslation, FRotator AdditionalRotation, int32 BoneIndex = 0, ENeuronSkeletonEnum skeletontype = ENeuronSkeletonEnum::VE_Neuron);
 
-	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Map Bone Coordinates", Keywords = "Map a bone coordinate system"))
-		static bool NeuronBoneMap(APerceptionNeuronController *Controller, int32 BoneIndex, ENeuronXYZEnum X, ENeuronXYZEnum Y, ENeuronXYZEnum Z);
+	// Map bone coordinates function
+	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Map Bone Coordinates", ToolTip = "Map bone coordinate system manually."))
+		static bool NeuronBoneMap(APerceptionNeuronController *Controller, int32 BoneIndex, ENeuronXYZEnum X = ENeuronXYZEnum::VE_X, ENeuronXYZEnum Y = ENeuronXYZEnum::VE_Y, ENeuronXYZEnum Z = ENeuronXYZEnum::VE_Z);
 
-	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Get Local Bone Rotation", Keywords = "Get local bone rotation from mesh"))
+	// Additional tools
+	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Get Local Bone Rotation", ToolTip = "Get local bone rotation from mesh."))
 		static bool NeuronGetLocalBoneRotation(USkeletalMeshComponent *Mesh, FRotator& Rotation, int32 BoneIndex = 0);
-	UFUNCTION(BlueprintPure, Category = "Perception Neuron", meta = (DisplayName = "Negate Rotation", CompactNodeTitle = "Neg", Keywords = "Negate Yaw, Pitch and Roll in rotation vector"))
+	UFUNCTION(BlueprintPure, Category = "Perception Neuron", meta = (DisplayName = "Negate Rotation", CompactNodeTitle = "Neg", ToolTip = "Negate Yaw, Pitch and Roll in rotation vector."))
 		static FRotator NeuronNegateRotation(FRotator Rotation);
 };
