@@ -60,16 +60,44 @@ enum class ENeuronXYZEnum : uint8
 	VE_NZ	 		UMETA(DisplayName = "-Z")	
 };
 
+UENUM(BlueprintType)
+enum class ENeuronRotOrderEnum : uint8
+{
+	VE_XYZ			UMETA(DisplayName = "XYZ"),
+	VE_XZY			UMETA(DisplayName = "XZY"),
+	VE_YXZ			UMETA(DisplayName = "YXZ"),
+	VE_YZX			UMETA(DisplayName = "YZX"),
+	VE_ZXY			UMETA(DisplayName = "ZXY"),
+	VE_ZYX	 		UMETA(DisplayName = "ZYX")
+};
+
+UENUM(BlueprintType)
+enum class ENeuronChannelNumberEnum : uint8
+{
+	VE_0			UMETA(DisplayName = "0"),
+	VE_1			UMETA(DisplayName = "1"),
+	VE_2			UMETA(DisplayName = "2"),
+	VE_3			UMETA(DisplayName = "3"),
+	VE_4			UMETA(DisplayName = "4"),
+	VE_5	 		UMETA(DisplayName = "5")
+};
+
 
 UCLASS()
 class UPerceptionNeuronBPLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_UCLASS_BODY()
 
-	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Init Neuron", ToolTip = "Init and read BVH reference skeleton"))
-		static bool NeuronInit(APerceptionNeuronController *Controller, const FString BVHFileName = FString(TEXT("axis.bvh")));
-	
-	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Connect Neuron", ToolTip = "Connect to Axis Neuron"))
+	// Init functions
+	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Init Neuron File", ToolTip = "Init BVH reference skeleton with a BVH file."))
+		static bool NeuronInitFile(APerceptionNeuronController *Controller, const FString BVHFileName = FString(TEXT("axis.bvh")));
+	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Init Neuron", ToolTip = "Init BVH reference skeleton manually."))
+		static bool NeuronInit(APerceptionNeuronController *Controller, int32 BoneNumber = 59, ENeuronRotOrderEnum RotationOrder = ENeuronRotOrderEnum::VE_YXZ, ENeuronChannelNumberEnum XPositionChannel = ENeuronChannelNumberEnum::VE_0, ENeuronChannelNumberEnum YPositionChannel = ENeuronChannelNumberEnum::VE_1, ENeuronChannelNumberEnum ZPositionChannel = ENeuronChannelNumberEnum::VE_2, ENeuronChannelNumberEnum XRotationChannel = ENeuronChannelNumberEnum::VE_4, ENeuronChannelNumberEnum YRotationChannel = ENeuronChannelNumberEnum::VE_3, ENeuronChannelNumberEnum ZRotationChannel = ENeuronChannelNumberEnum::VE_5);
+	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Bone Set Offset", ToolTip = "Configure BVH bone offset. This offset is removed from the incoming translation before coordinate mapping."))
+		static bool NeuronBoneSetOffset(APerceptionNeuronController *Controller, int32 BoneIndex = 0, float X = 0.0f, float Y = 0.0f, float Z = 0.0f);
+
+	// Network functions
+	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Connect Neuron", ToolTip = "Connect to Axis Neuron Playser."))
 		static bool NeuronConnect(APerceptionNeuronController *Controller, const FString HostName = FString(TEXT("127.0.0.1")), int32 Port = 7001, bool bReference = false, bool bDisplacement = true, ENeuronMotionLineFormatEnum MotionLineFormat = ENeuronMotionLineFormatEnum::VE_Neuron);
 	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Disconnect Neuron", ToolTip = "Disconnect from Axis Neuron Player."))
 		static bool NeuronDisconnect(APerceptionNeuronController *Controller);

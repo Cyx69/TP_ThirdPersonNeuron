@@ -22,8 +22,8 @@ UPerceptionNeuronBPLibrary::UPerceptionNeuronBPLibrary(const FObjectInitializer&
 
 }
 
-// Init and read BVH reference skeleton
-bool UPerceptionNeuronBPLibrary::NeuronInit(APerceptionNeuronController *Controller, FString BVHFileName)
+// Init with file and read BVH reference skeleton
+bool UPerceptionNeuronBPLibrary::NeuronInitFile(APerceptionNeuronController *Controller, FString BVHFileName)
 {
 	if (Controller == NULL)
 	{
@@ -38,6 +38,38 @@ bool UPerceptionNeuronBPLibrary::NeuronInit(APerceptionNeuronController *Control
 		return false;
 
 	return true;
+}
+
+// Init and configure BVH reference skeleton
+bool UPerceptionNeuronBPLibrary::NeuronInit(APerceptionNeuronController *Controller, int32 BoneNr, ENeuronRotOrderEnum RotationOrder, ENeuronChannelNumberEnum XPos, ENeuronChannelNumberEnum YPos, ENeuronChannelNumberEnum ZPos, ENeuronChannelNumberEnum XRot, ENeuronChannelNumberEnum YRot, ENeuronChannelNumberEnum ZRot)
+{
+	if (Controller == NULL)
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Controller is invalid.")));
+		}
+		return false;
+	}
+
+	Controller->Skeleton.BoneNr = BoneNr;
+	Controller->Skeleton.BonesSetRotOrder((ChannelOrderEnum)RotationOrder);
+	return Controller->Skeleton.BonesSetChannels((uint8)XPos, (uint8)YPos, (uint8)ZPos, (uint8)XRot, (uint8)YRot, (uint8)ZRot);
+}
+
+// Init and configure BVH reference skeleton
+bool UPerceptionNeuronBPLibrary::NeuronBoneSetOffset(APerceptionNeuronController *Controller, int32 BoneIndex, float X, float Y, float Z)
+{
+	if (Controller == NULL)
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Controller is invalid.")));
+		}
+		return false;
+	}
+
+	return Controller->Skeleton.BoneSetOffset(X, Y, Z, BoneIndex);
 }
 
 // Connect to Axis Neuron

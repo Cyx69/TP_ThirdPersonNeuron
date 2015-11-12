@@ -2,6 +2,8 @@ List of changes:
 ================
 
 v0.2.0
+- Reference skeleton can now be manually initialized and 
+  using external BVH reference file is now optional.
 - Support all rotation orders and add missing XZY, YZX, ZYX rotation
 - Better support for custom skeletons:
   Bone coordinate system can now be mapped in blueprint.
