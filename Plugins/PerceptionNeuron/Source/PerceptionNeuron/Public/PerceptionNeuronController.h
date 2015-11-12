@@ -22,7 +22,7 @@
 
 
 // Supported rotation matrices
-enum ChannelOrderEnum { XYZ, ZXY, YXZ }; // 123, 312, 213
+enum ChannelOrderEnum { XYZ, XZY, YXZ, YZX, ZXY, ZYX };
 
 // Supported motion line formats
 enum MotionLineFormatEnum { Standard, Neuron };

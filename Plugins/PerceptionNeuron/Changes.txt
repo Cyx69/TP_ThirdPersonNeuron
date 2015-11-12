@@ -2,6 +2,7 @@ List of changes:
 ================
 
 v0.2.0
+- Support all rotation orders and add missing XZY, YZX, ZYX rotation
 - Better support for custom skeletons:
   Bone coordinate system can now be mapped in blueprint.
 - Fix a synchronization bug when using Neuron format

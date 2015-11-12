@@ -309,21 +309,19 @@ bool APerceptionNeuronController::ParseBVHReferenceFile(FString BVHFileName)
 					else if (Words[j + 2].StartsWith(TEXT("Zrotation"), ESearchCase::IgnoreCase) == true)
 						Skeleton[bone].ZRot = j;
 				}
-				// Check if we support rotation order
+				// Calculate rotation order
 				if ((Skeleton[bone].XRot < Skeleton[bone].YRot) && (Skeleton[bone].YRot < Skeleton[bone].ZRot)) // e.g. 123
 					Skeleton[bone].RotOrder = XYZ;
-				else if ((Skeleton[bone].ZRot < Skeleton[bone].XRot) && (Skeleton[bone].XRot < Skeleton[bone].YRot)) // e.g. 312
-					Skeleton[bone].RotOrder = ZXY;
+				else if ((Skeleton[bone].XRot < Skeleton[bone].ZRot) && (Skeleton[bone].ZRot < Skeleton[bone].YRot)) // e.g. 132
+					Skeleton[bone].RotOrder = XZY;
 				else if ((Skeleton[bone].YRot < Skeleton[bone].XRot) && (Skeleton[bone].XRot < Skeleton[bone].ZRot)) // e.g. 213
 					Skeleton[bone].RotOrder = YXZ;
-				else
-				{
-					if (GEngine)
-					{
-						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Rotation order not supported on bone:%u"), bone));
-					}
-					return false;
-				}
+				else if ((Skeleton[bone].YRot < Skeleton[bone].ZRot) && (Skeleton[bone].ZRot < Skeleton[bone].XRot)) // e.g. 231
+					Skeleton[bone].RotOrder = YZX;
+				else if ((Skeleton[bone].ZRot < Skeleton[bone].XRot) && (Skeleton[bone].XRot < Skeleton[bone].YRot)) // e.g. 312
+					Skeleton[bone].RotOrder = ZXY;
+				else 
+					Skeleton[bone].RotOrder = ZYX;
 
 				if (bone >= MAXBONES)
 				{
