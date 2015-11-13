@@ -1,7 +1,12 @@
 List of changes:
 ================
 v0.4.0
-- Add Plugin v0.2.0
+- Network and player controller actors now support manual configuration
+  of reference skeleton instead using external BVH reference file.
+- To have an example how to add custom skeletons,
+  the Mannequin now uses the new bone map feature of the plugin.
+  For a "HowTo" please have a look into the Mannequin BP function "Init Bone Map".
+- Update to Plugin v0.2.0
 
 v0.3.0
 - Source code restructure: C++ code is now placed in a plugin to be more project independend.

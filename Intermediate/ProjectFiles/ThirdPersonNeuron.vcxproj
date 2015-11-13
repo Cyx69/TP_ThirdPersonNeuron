@@ -267,9 +267,12 @@
     <None Include="..\..\Plugins\PerceptionNeuron\PerceptionNeuron.uplugin" />
     <None Include="..\..\Plugins\PerceptionNeuron\Resources\Icon128.png" />
     <None Include="..\..\Source\ThirdPersonNeuron\ThirdPersonNeuron.Build.cs" />
+    <ClCompile Include="..\..\Plugins\PerceptionNeuron\Source\PerceptionNeuron\Private\PerceptionNeuronBVHSkeleton.cpp" />
     <ClCompile Include="..\..\Plugins\PerceptionNeuron\Source\PerceptionNeuron\Private\PerceptionNeuronController.cpp" />
     <ClCompile Include="..\..\Source\ThirdPersonNeuron\ThirdPersonNeuron.cpp" />
+    <ClInclude Include="..\..\Plugins\PerceptionNeuron\Source\PerceptionNeuron\Public\PerceptionNeuronBVHSkeleton.h" />
     <ClInclude Include="..\..\Plugins\PerceptionNeuron\Source\PerceptionNeuron\Public\PerceptionNeuronController.h" />
+    <ClInclude Include="..\..\Plugins\PerceptionNeuron\Source\PerceptionNeuron\Public\PerceptionNeuronMath.h" />
     <ClInclude Include="..\..\Source\ThirdPersonNeuron\ThirdPersonNeuron.h" />
     <ClCompile Include="..\..\Source\ThirdPersonNeuron\ThirdPersonNeuronCharacter.cpp" />
     <ClInclude Include="..\..\Source\ThirdPersonNeuron\ThirdPersonNeuronCharacter.h" />

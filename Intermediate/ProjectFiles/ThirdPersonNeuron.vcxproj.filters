@@ -97,9 +97,18 @@
     <ClCompile Include="..\..\Plugins\PerceptionNeuron\Source\PerceptionNeuron\Private\PerceptionNeuronController.cpp">
       <Filter>Plugins\PerceptionNeuron\Source\PerceptionNeuron\Private</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Plugins\PerceptionNeuron\Source\PerceptionNeuron\Private\PerceptionNeuronBVHSkeleton.cpp">
+      <Filter>Plugins\PerceptionNeuron\Source\PerceptionNeuron\Private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Plugins\PerceptionNeuron\Source\PerceptionNeuron\Public\PerceptionNeuronController.h">
+      <Filter>Plugins\PerceptionNeuron\Source\PerceptionNeuron\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\PerceptionNeuron\Source\PerceptionNeuron\Public\PerceptionNeuronMath.h">
+      <Filter>Plugins\PerceptionNeuron\Source\PerceptionNeuron\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Plugins\PerceptionNeuron\Source\PerceptionNeuron\Public\PerceptionNeuronBVHSkeleton.h">
       <Filter>Plugins\PerceptionNeuron\Source\PerceptionNeuron\Public</Filter>
     </ClInclude>
   </ItemGroup>
