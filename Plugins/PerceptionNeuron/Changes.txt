@@ -2,12 +2,13 @@ List of changes:
 ================
 
 v0.2.0
-- Reference skeleton can now be manually initialized and 
-  using external BVH reference file is now optional.
-- Support all rotation orders and add missing XZY, YZX, ZYX rotation
+- It is now possible to initialize Reference skeleton manually and 
+  initialization with external BVH reference file is optional.
+- Support all rotation orders and add missing XZY, YZX, ZYX rotations
 - Better support for custom skeletons:
   Bone coordinate system can now be mapped in blueprint.
 - Fix a synchronization bug when using Neuron format
+- Further comments and minor improvements
 
 v0.1.0
 - Initial plugin version created.
