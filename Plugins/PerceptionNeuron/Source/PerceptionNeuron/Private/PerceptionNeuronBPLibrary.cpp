@@ -69,7 +69,7 @@ bool UPerceptionNeuronBPLibrary::NeuronBoneSetOffset(APerceptionNeuronController
 		return false;
 	}
 
-	return Controller->Skeleton.BoneSetOffset(X, Y, Z, BoneIndex);
+	return Controller->Skeleton.BoneSetOffset(BoneIndex, X, Y, Z);
 }
 
 // Connect to Axis Neuron

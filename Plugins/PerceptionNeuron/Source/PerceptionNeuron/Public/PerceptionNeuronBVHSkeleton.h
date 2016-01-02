@@ -38,7 +38,7 @@ public:
 	void BonesSetOffset(int32 X, int32 Y, int32 Z);
 
 	// Set translation offset on bone
-	bool BoneSetOffset(float X, float Y, float Z, int32 BoneIndex);
+	bool BoneSetOffset(int32 BoneIndex, float X, float Y, float Z);
 
 	typedef struct Bone
 	{

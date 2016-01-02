@@ -179,7 +179,7 @@ void PerceptionNeuronBVHSkeleton::BonesSetOffset(int32 X, int32 Y, int32 Z)
 }
 
 // Set translation offset on bone
-bool PerceptionNeuronBVHSkeleton::BoneSetOffset(float X, float Y, float Z, int32 BoneIndex)
+bool PerceptionNeuronBVHSkeleton::BoneSetOffset(int32 BoneIndex, float X, float Y, float Z)
 {
 	if (BoneIndex > MAXBONES)
 		return false;
