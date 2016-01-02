@@ -497,6 +497,34 @@ bool UPerceptionNeuronBPLibrary::NeuronGetLocalBoneRotation(USkeletalMeshCompone
 	return true;
 }
 
+// Get local bone location from mesh
+bool UPerceptionNeuronBPLibrary::NeuronGetLocalBoneLocation(USkeletalMeshComponent *Mesh, FVector& Location, int32 BoneIndex)
+{
+	if (Mesh == NULL)
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Mesh is invalid.")));
+		}
+		Location.X = Location.Y = Location.Z = 0;
+		return false;
+	}
+
+	if (BoneIndex > Mesh->LocalAtoms.Num())
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("BoneIndex %d exceeds maximum available bones %d."), BoneIndex, Mesh->LocalAtoms.Num()));
+		}
+		Location.X = Location.Y = Location.Z = 0;
+		return false;
+	}
+
+	Location = Mesh->LocalAtoms[BoneIndex].GetLocation();
+
+	return true;
+}
+
 // Negate Yaw, Pitch and Roll in rotation vector
 FRotator UPerceptionNeuronBPLibrary::NeuronNegateRotation(FRotator Rotation)
 {

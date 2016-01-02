@@ -122,6 +122,8 @@ class UPerceptionNeuronBPLibrary : public UBlueprintFunctionLibrary
 	// Additional tools
 	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Get Local Bone Rotation", ToolTip = "Get local bone rotation from mesh."))
 		static bool NeuronGetLocalBoneRotation(USkeletalMeshComponent *Mesh, FRotator& Rotation, int32 BoneIndex = 0);
+	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Get Local Bone Location", Keywords = "Get local bone location from mesh"))
+		static bool NeuronGetLocalBoneLocation(USkeletalMeshComponent *Mesh, FVector& Location, int32 BoneIndex = 0);
 	UFUNCTION(BlueprintPure, Category = "Perception Neuron", meta = (DisplayName = "Negate Rotation", CompactNodeTitle = "Neg", ToolTip = "Negate Yaw, Pitch and Roll in rotation vector."))
 		static FRotator NeuronNegateRotation(FRotator Rotation);
 };
