@@ -91,6 +91,7 @@ public:
 public:
 	bool Play(FString BVHFileName, bool bEndless);
 	bool Pause(bool bPause);
+	bool Rewind();
 
 private:
 	float FrameTime = 0;

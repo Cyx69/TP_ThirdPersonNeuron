@@ -73,12 +73,13 @@ void APerceptionNeuronController::Tick(float DeltaTime)
 
 					if (MotionLinePointer < (MotionLineOffset + Frames))
 					{
-						if (SIZEOFDATA >= PlayerMotionLines[MotionLinePointer].Len() + 1) // Sanity check
+						int32 MotionLine = MotionLinePointer;
+						if (SIZEOFDATA >= PlayerMotionLines[MotionLine].Len() + 1) // Sanity check
 						{
 							// Convert string based motion line back to an array of chars to pump the line through the parser (Little bit ugly...)
-							memcpy(Data, TCHAR_TO_ANSI(*PlayerMotionLines[MotionLinePointer]), PlayerMotionLines[MotionLinePointer].Len());
-							Data[PlayerMotionLines[MotionLinePointer].Len()] = '\n';
-							BytesRead = PlayerMotionLines[MotionLinePointer].Len() + 1;
+							memcpy(Data, TCHAR_TO_ANSI(*PlayerMotionLines[MotionLine]), PlayerMotionLines[MotionLine].Len());
+							Data[PlayerMotionLines[MotionLine].Len()] = '\n';
+							BytesRead = PlayerMotionLines[MotionLine].Len() + 1;
 						}
 						MotionLinePointer++; // Increment line for next time;
 						if ((MotionLinePointer >= (MotionLineOffset + Frames)) && (bEndless == true))
@@ -357,3 +358,9 @@ bool APerceptionNeuronController::Pause(bool bPause)
 	return bPlay;
 }
 
+bool APerceptionNeuronController::Rewind()
+{
+	if (bPlayerInitialized == true)
+		MotionLinePointer = MotionLineOffset;
+	return bPlayerInitialized;
+}

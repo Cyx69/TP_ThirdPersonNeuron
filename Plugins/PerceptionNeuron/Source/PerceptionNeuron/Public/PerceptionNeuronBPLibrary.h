@@ -107,6 +107,8 @@ class UPerceptionNeuronBPLibrary : public UBlueprintFunctionLibrary
 		static bool NeuronPlay(APerceptionNeuronController *Controller, FString BVHFileName = FString(TEXT("test.bvh")), bool bEndless = true, bool bReference = false, bool bDisplacement = true, ENeuronMotionLineFormatEnum MotionLineFormat = ENeuronMotionLineFormatEnum::VE_Standard);
 	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Pause playing BVH File", ToolTip = "Pause playing a local stored BVH file"))
 		static bool NeuronPause(APerceptionNeuronController *Controller, bool bPause = false);
+	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Rewind BVH File Player", ToolTip = "Rewind BVH file player."))
+		static bool NeuronRewind(APerceptionNeuronController *Controller);
 
 	// Read motion function
 	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Read Neuron Motion", ToolTip = "Read incoming motion data for one bone."))

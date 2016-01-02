@@ -154,6 +154,21 @@ bool UPerceptionNeuronBPLibrary::NeuronPause(APerceptionNeuronController *Contro
 	return (Controller->Pause(bPause));
 }
 
+// Rewind BVH file player
+bool UPerceptionNeuronBPLibrary::NeuronRewind(APerceptionNeuronController *Controller)
+{
+	if (Controller == NULL)
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Controller is invalid.")));
+		}
+		return false;
+	}
+
+	return (Controller->Rewind());
+}
+
 // Read motion data from Axis Neuron
 bool UPerceptionNeuronBPLibrary::NeuronReadMotion(APerceptionNeuronController *Controller, FVector& Translation, FRotator& Rotation, FVector AddTranslation, FRotator AddRotation, int32 BoneIndex, ENeuronSkeletonEnum SkeletonType)
 {
