@@ -269,7 +269,19 @@ bool UPerceptionNeuronBPLibrary::NeuronReadMotion(APerceptionNeuronController *C
 
 				Translation = FVector(Map[Controller->Bonemap[BoneIndex].XYZ[0]] * Controller->Bonemap[BoneIndex].Sign[0],
 									  Map[Controller->Bonemap[BoneIndex].XYZ[1]] * Controller->Bonemap[BoneIndex].Sign[1],
-									  Map[Controller->Bonemap[BoneIndex].XYZ[2]] * Controller->Bonemap[BoneIndex].Sign[2]);				
+									  Map[Controller->Bonemap[BoneIndex].XYZ[2]] * Controller->Bonemap[BoneIndex].Sign[2]);	
+				break;
+			}			
+			case ENeuronSkeletonEnum::VE_UE4: // Map to UE4 world coordinate system
+			{
+				Translation = FVector(X, Z, Y);
+				break;
+			}
+			case ENeuronSkeletonEnum::VE_None: // Map to nothing, use BVH translation as it is
+			default:
+			{
+				Translation = FVector(X, Y, Z);
+				break;
 			}
 		}
 	} 
@@ -391,7 +403,20 @@ bool UPerceptionNeuronBPLibrary::NeuronReadMotion(APerceptionNeuronController *C
 			Quat.X = Map[Controller->Bonemap[BoneIndex].XYZ[0]] * Controller->Bonemap[BoneIndex].Sign[0];
 			Quat.Y = Map[Controller->Bonemap[BoneIndex].XYZ[1]] * Controller->Bonemap[BoneIndex].Sign[1];
 			Quat.Z = Map[Controller->Bonemap[BoneIndex].XYZ[2]] * Controller->Bonemap[BoneIndex].Sign[2];
-
+			break;
+		}
+		case ENeuronSkeletonEnum::VE_UE4: // Map to UE4 world coordinate system
+		{
+			float Y = Quat.Y;
+			float Z = Quat.Z;
+			Quat.Y = Z;
+			Quat.Z = Y;
+			break;
+		}		
+		case ENeuronSkeletonEnum::VE_None: // Map to nothing, use BVH rotation as it is
+		default:
+		{
+			// Nothing to do, Quaternion is already BVH
 			break;
 		}
 	}		

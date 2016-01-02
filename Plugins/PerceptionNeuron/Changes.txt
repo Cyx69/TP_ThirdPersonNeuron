@@ -2,6 +2,8 @@ List of changes:
 ================
 v0.3.0
 - Add BVH player rewind node
+- Add new enum to NeuronReadMotion to get skeleton translation and rotation
+  in world coordinate system (still relative values)
 - Further comments and minor improvements 
 
 v0.2.0
