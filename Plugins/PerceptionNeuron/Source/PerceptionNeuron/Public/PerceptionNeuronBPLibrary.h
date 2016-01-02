@@ -40,7 +40,7 @@ enum class ENeuronSkeletonEnum : uint8
 	VE_TPP_Hero		UMETA(DisplayName = "TPP_Hero", ToolTip = "Get Hero_TPP skeleton coordinates. Old blue Unreal default skeleton with T-Pose."),
 	VE_Mannequin	UMETA(DisplayName = "Mannequin", ToolTip = "Get Mannequin skeleton coordinates. New grey Unreal default skeleton with A-Pose."),
 	VE_Map			UMETA(DisplayName = "Map", ToolTip = "Get custom skeleton coordinates with configured bone map."),
-	VE_UE4			UMETA(DisplayName = "World" ToolTip = "Get UE4 world skeleton coordinates."),
+	VE_UE4			UMETA(DisplayName = "World", ToolTip = "Get UE4 world skeleton coordinates.")
 };
 
 UENUM(BlueprintType)
