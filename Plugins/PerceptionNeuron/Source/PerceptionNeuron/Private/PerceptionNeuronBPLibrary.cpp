@@ -309,7 +309,7 @@ bool UPerceptionNeuronBPLibrary::NeuronReadMotion(APerceptionNeuronController *C
 	// Calculate Rotation Matrix and map to Quaternion
 	FQuat Quat = CalculateQuat(XR, YR, ZR, Controller->Skeleton.Bones[BoneIndex].RotOrder);
 
-	// Map to each bone coordinate systems dependend on skeleton type
+	// Map BVH coordinate system to each bone coordinate system dependend on skeleton type
 	switch (SkeletonType)
 	{
 		case ENeuronSkeletonEnum::VE_Neuron:  // Neuron BVH skeleton
@@ -420,8 +420,8 @@ bool UPerceptionNeuronBPLibrary::NeuronReadMotion(APerceptionNeuronController *C
 			break;
 		}
 	}		
-	
-	// Map to Rotator
+
+	// Convert to Rotator
 	Rotation = Quat.Rotator();
 
 	// Add additional rotation
