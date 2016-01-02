@@ -1,5 +1,8 @@
 List of changes:
 ================
+v0.3.0
+- Add BVH player rewind node
+- 
 
 v0.2.0
 - It is now possible to initialize Reference skeleton manually and 
