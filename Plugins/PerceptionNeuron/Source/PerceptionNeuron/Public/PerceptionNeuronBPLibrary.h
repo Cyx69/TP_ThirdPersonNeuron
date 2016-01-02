@@ -35,18 +35,18 @@
 UENUM(BlueprintType)
 enum class ENeuronSkeletonEnum : uint8
 {
-	VE_None 		UMETA(DisplayName = "None"),		// Map to nothing, use translation and rotation as it is
-	VE_Neuron 		UMETA(DisplayName = "Neuron"),		// Map to Neuron BVH skeleton
-	VE_TPP_Hero		UMETA(DisplayName = "TPP_Hero"),	// Map to Hero_TPP, Old blue Unreal default skeleton with T-Pose
-	VE_Mannequin	UMETA(DisplayName = "Mannequin"),	// Map to Mannequin, New grey Unreal default skeleton with A-Pose
-	VE_Map			UMETA(DisplayName = "Map")			// Map to configured bone map
+	VE_None 		UMETA(DisplayName = "None", ToolTip = "Get BVH coordinates. Use translation and rotation as it is."),
+	VE_Neuron 		UMETA(DisplayName = "Neuron", ToolTip = "Get Neuron BVH skeleton coordinates."),
+	VE_TPP_Hero		UMETA(DisplayName = "TPP_Hero", ToolTip = "Get Hero_TPP skeleton coordinates. Old blue Unreal default skeleton with T-Pose."),
+	VE_Mannequin	UMETA(DisplayName = "Mannequin", ToolTip = "Get Mannequin skeleton coordinates. New grey Unreal default skeleton with A-Pose."),
+	VE_Map			UMETA(DisplayName = "Map" ToolTip = "Get custom skeleton coordinates with configured bone map."),
 };
 
 UENUM(BlueprintType)
 enum class ENeuronMotionLineFormatEnum : uint8
 {
-	VE_Standard		UMETA(DisplayName = "Standard"),	// BVH Standard format (only the float numbers and a CR or LF at line ending)
-	VE_Neuron 		UMETA(DisplayName = "Neuron")		// Axis Neuron BVH live format (with character name at beginning and || at line ending)
+	VE_Standard		UMETA(DisplayName = "Standard", ToolTip = "BVH Standard format (only the float numbers and a CR or LF at line ending)."),
+	VE_Neuron 		UMETA(DisplayName = "Neuron", ToolTip = "Axis Neuron BVH live format (with character name at beginning and || at line ending).")
 };
 
 UENUM(BlueprintType)
