@@ -42,13 +42,17 @@ public:
 
 	typedef struct Bone
 	{
-		FString Name;		// Name of bone
-		float Offset[3];	// x,y,z translation offset
-		uint8 ChannelCount; // Should be 6
-		// Channel positions in motion line
-		uint8 XPos, YPos, ZPos;
-		uint8 XRot, YRot, ZRot;
-		ChannelOrderEnum RotOrder;
+		// Name of bone
+		FString Name;
+
+		// x,y,z joint offset
+		float Offset[3];	
+		
+		// Motion line channel informations
+		uint8 ChannelCount;			// Number of channels per bone. Should be 6 or 3 (with or without displacement)
+		uint8 XPos, YPos, ZPos;		// Position of translation channels
+		uint8 XRot, YRot, ZRot;		// Position of rotation channels
+		ChannelOrderEnum RotOrder;	// Rotation order
 	} BONE;
 
 	BONE Bones[MAXBONES];
