@@ -4,6 +4,7 @@ v0.3.0
 - Add BVH player rewind node
 - Add new enum to NeuronReadMotion to get skeleton translation and rotation
   in world coordinate system (still relative values)
+- Compile pre build libraries with UE4.10
 - Further comments and minor improvements 
 
 v0.2.0
