@@ -48,7 +48,7 @@ To handle and configure each network connection separately a custom controller a
 
 II. Requirements
 ================
-* Make sure that you have Unreal Engine 4.9.1 or newer installed.
+* Make sure that you have Unreal Engine 4.10.1 or newer installed.
 * Axis Neuron SW Player (Free version is available here: https://neuronmocap.com/downloads)
   or alternatively you can use my minimal BVH send server here:
   https://github.com/Cyx69/bvhsend/releases
@@ -72,7 +72,7 @@ III. Installation
 
 IV. Configuration
 =================
-The plugin was developed and tested with Unreal Engine 4.9.1 and Axis Neuron 3.5.19.1225.
+The plugin was developed and tested with Unreal Engine 4.10.1 and Axis Neuron 3.5.19.1225.
 
 To connect from the plugin to the Axis Neuron SW following settings should be done in the 
 Axis Neuron SW:

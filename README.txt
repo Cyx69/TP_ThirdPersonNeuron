@@ -46,8 +46,8 @@ To handle and configure each network connection separately a custom controller a
 
 II. Requirements
 ================
-* Make sure that you have Unreal Engine 4.9.1 or newer installed.
-* Make also sure that you have Visual Studio 2013 installed.
+* Make sure that you have Unreal Engine 4.10.1 or newer installed.
+* Make also sure that you have Visual Studio 2015 installed.
   The community edition is free for individual developers.
   Don't be afraid if you aren't familiar with C++ and don't want to change the code.
   Unreal automatically compiles the code while opening the project for the first time.
@@ -67,7 +67,7 @@ https://github.com/Cyx69/TP_ThirdPersonNeuron/releases/download/v0.3.0/Perceptio
 III. Installation
 =================
 * Download the template under: "https://github.com/Cyx69/TP_ThirdPersonNeuron/releases".
-* Unpack the file to your UE4 template folder, for e.g. "C:\Program Files\Unreal Engine\4.9\Templates\TP_ThirdPersonNeuron".
+* Unpack the file to your UE4 template folder, for e.g. "C:\Program Files\Unreal Engine\4.10\Templates\TP_ThirdPersonNeuron".
   Make sure that the project files are placed and visible under "...\Templates\TP_ThirdPersonNeuron" after unzip.
 * Launch Unreal Editor and click on "New project".
 * Under C++ you should now see a template called "TP Neuron".
@@ -76,8 +76,8 @@ III. Installation
 
 IV. Configuration
 =================
-The template was developed and tested with Unreal Engine 4.9.1 and Axis Neuron 3.5.19.1225.
-The C++ development was done with MS Visual Studio Community 2013.
+The template was developed and tested with Unreal Engine 4.10.1 and Axis Neuron 3.5.19.1225.
+The C++ development was done with MS Visual Studio Community 2015.
 
 To connect from the template to the Axis Neuron SW following settings should be done in the 
 Axis Neuron SW:
