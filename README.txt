@@ -23,7 +23,7 @@ Contents:
 
 I. Description
 ==============
-This template is based on the Unreal (R) Engine 4 First Person C++ 4.9 template and 
+This template is based on the Unreal (R) Engine 4 First Person C++ 4.10 template and 
 enhances it with the support for the Perception Neuron (TM) motion capture suit.
 
 Perception Neuron (TM) is a motion capture suit from Noitom financed by a Kickstarter campaign last year:
