@@ -191,9 +191,9 @@ class UPerceptionNeuronBPLibrary : public UBlueprintFunctionLibrary
 
 	// Read motion functions
 	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Read Neuron Motion", ToolTip = "Read incoming motion data for all bones."))
-		static bool NeuronRead(APerceptionNeuronController *Controller, USkeletalMeshComponent *Mesh, FVector& Translation, FRotator& Rotation, FVector AdditionalTranslation, FRotator AdditionalRotation, EPerceptionNeuronBonesEnum BVHBone = EPerceptionNeuronBonesEnum::VE_Hips, FName CustomBoneName = FName(TEXT("None")));
+		static bool NeuronRead(APerceptionNeuronController *Controller, USkeletalMeshComponent *Mesh, FVector& Translation, FRotator& Rotation, FVector AdditionalTranslation, FRotator AdditionalRotation, EPerceptionNeuronBonesEnum BVHBone = EPerceptionNeuronBonesEnum::VE_Hips, FName CustomBoneName = FName(TEXT("None")), bool InverseForward = false);
 	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Read Neuron Motion Array", ToolTip = "Read incoming motion data for all bones."))
-		static bool NeuronReadArray(APerceptionNeuronController *Controller, USkeletalMeshComponent *Mesh, TArray<FVector> &Translation, TArray<FRotator> &Rotation, TArray<FVector> AdditionalTranslation, TArray<FRotator> AdditionalRotation, TArray<FPerceptionNeuronBoneMapStruct> BoneMap);
+		static bool NeuronReadArray(APerceptionNeuronController *Controller, USkeletalMeshComponent *Mesh, TArray<FVector> &Translation, TArray<FRotator> &Rotation, TArray<FVector> AdditionalTranslation, TArray<FRotator> AdditionalRotation, TArray<FPerceptionNeuronBoneMapStruct> BoneMap, bool InverseForward = false);
 
 	// Additional tools
 	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Get Local Bone Rotation", ToolTip = "Get local bone rotation from mesh."))
