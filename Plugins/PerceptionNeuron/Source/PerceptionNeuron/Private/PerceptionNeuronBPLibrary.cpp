@@ -169,22 +169,268 @@ bool UPerceptionNeuronBPLibrary::NeuronRewind(APerceptionNeuronController *Contr
 }
 
 // Read motion data from Axis Neuron
-bool UPerceptionNeuronBPLibrary::NeuronReadMotion(APerceptionNeuronController *Controller, FVector& Translation, FRotator& Rotation, FVector AddTranslation, FRotator AddRotation, int32 BoneIndex, ENeuronSkeletonEnum SkeletonType)
+bool UPerceptionNeuronBPLibrary::NeuronRead(APerceptionNeuronController *Controller, USkeletalMeshComponent *Mesh, FVector& Translation, FRotator& Rotation, FVector AdditionalTranslation, FRotator AdditionalRotation, EPerceptionNeuronBonesEnum BVHBone, FName CustomBoneName)
 {
-	bool bExit = false;
-	int32 FloatsPerBone = 6; // 3 for x,y,z translation and 3 for x,y,z rotation
-
 	if (Controller == nullptr)
 	{
 		if (GEngine)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Controller is invalid.")));
 		}
-		bExit = true;
+		Rotation.Yaw = Rotation.Pitch = Rotation.Roll = 0;
+		Translation.X = Translation.Y = Translation.Z = 0;
+		return false;
 	}
 	else if ((Controller->bConnected == false) && (Controller->bPlay == false))
 	{
-		bExit = true;
+		Rotation.Yaw = Rotation.Pitch = Rotation.Roll = 0;
+		Translation.X = Translation.Y = Translation.Z = 0;
+		return false;
+	}
+
+	int32 BVHBoneIndex = (int32)BVHBone;
+	if (BVHBoneIndex >= Controller->Skeleton.BoneNr)
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Boneindex %d exceeds maximum available bones %d."), BVHBoneIndex, Controller->Skeleton.BoneNr));
+		}
+		Rotation.Yaw = Rotation.Pitch = Rotation.Roll = 0;
+		Translation.X = Translation.Y = Translation.Z = 0;
+		return false;
+	}
+
+	int32 FloatsPerBone = 6; // 3 for x,y,z translation and 3 for x,y,z rotation
+	if (Controller->bDisplacement == false)
+	{
+		FloatsPerBone = 3;	// If there is no displacement (translation) info we have only 3 floats for rotation left
+	}
+	if ((BVHBoneIndex * FloatsPerBone) > Controller->FloatCount)
+	{
+		Rotation.Yaw = Rotation.Pitch = Rotation.Roll = 0;
+		Translation.X = Translation.Y = Translation.Z = 0;
+		return false;
+	}
+
+	// Get the rotation of the reference pose bone
+	FQuat RefQuat(FQuat::Identity);
+	if (Mesh != nullptr && Mesh->SkeletalMesh != nullptr)
+	{
+		const FReferenceSkeleton& RefSkeleton(Mesh->SkeletalMesh->RefSkeleton);
+		int32 RefBoneIndex = Mesh->GetBoneIndex(CustomBoneName);
+		while (RefBoneIndex != INDEX_NONE)
+		{
+			RefQuat = RefSkeleton.GetRefBonePose()[RefBoneIndex].GetRotation() * RefQuat;
+			RefBoneIndex = RefSkeleton.GetParentIndex(RefBoneIndex);
+		}
+	}
+
+	//
+	// Translation
+	//
+
+	if (Controller->bDisplacement == true)
+	{
+		// Read translation values and remove BVH reference position
+		float X = Controller->MotionLine[(BVHBoneIndex * FloatsPerBone) + Controller->Skeleton.Bones[BVHBoneIndex].XPos] - Controller->Skeleton.Bones[BVHBoneIndex].Offset[0];
+		float Y = Controller->MotionLine[(BVHBoneIndex * FloatsPerBone) + Controller->Skeleton.Bones[BVHBoneIndex].YPos] - Controller->Skeleton.Bones[BVHBoneIndex].Offset[1];
+		float Z = Controller->MotionLine[(BVHBoneIndex * FloatsPerBone) + Controller->Skeleton.Bones[BVHBoneIndex].ZPos] - Controller->Skeleton.Bones[BVHBoneIndex].Offset[2];
+
+		// Map BVH translation to UE4 world coordinate system
+		Translation = FVector(X, Z, Y);
+
+		// Map UE4 world translation to bone space	
+		Translation = RefQuat.Inverse().RotateVector(Translation);
+	}
+	else
+	{
+		Translation.X = Translation.Y = Translation.Z = 0;
+	}
+
+	// Add additional translation
+	Translation.X += AdditionalTranslation.X;
+	Translation.Y += AdditionalTranslation.Y;
+	Translation.Z += AdditionalTranslation.Z;
+
+
+	//
+	// Rotation 
+	//
+
+	// Read rotation values and map to pitch, yaw, roll (y, z, x)
+	float XR = Controller->MotionLine[(BVHBoneIndex * FloatsPerBone) + Controller->Skeleton.Bones[BVHBoneIndex].XRot] * PI / 180.f;
+	float YR = Controller->MotionLine[(BVHBoneIndex * FloatsPerBone) + Controller->Skeleton.Bones[BVHBoneIndex].YRot] * PI / 180.f;
+	float ZR = Controller->MotionLine[(BVHBoneIndex * FloatsPerBone) + Controller->Skeleton.Bones[BVHBoneIndex].ZRot] * PI / 180.f;
+
+	// Calculate Rotation Matrix and map to Quaternion
+	FQuat BVHQuat = CalculateQuat(XR, YR, ZR, Controller->Skeleton.Bones[BVHBoneIndex].RotOrder);
+
+	// Map BVH rotation to UE4 world coordinate system
+	float Y = BVHQuat.Y;
+	float Z = BVHQuat.Z;
+	BVHQuat.Y = Z;
+	BVHQuat.Z = Y;
+
+	// Map UE4 world rotation to bone space
+	FQuat Quat(RefQuat.Inverse() * BVHQuat * RefQuat);
+	
+	// Add additional rotation
+	FQuat AddRot(AdditionalRotation);
+	Quat *= AddRot;
+
+	// Convert to Rotator
+	Rotation = Quat.Rotator();
+	Rotation.Normalize();
+
+	return true;
+}
+
+// Read motion as array
+bool UPerceptionNeuronBPLibrary::NeuronReadArray(APerceptionNeuronController *Controller, USkeletalMeshComponent *Mesh, TArray<FVector> &Translation, TArray<FRotator> &Rotation, TArray<FVector> AdditionalTranslation, TArray<FRotator> AdditionalRotation, TArray<FPerceptionNeuronBoneMapStruct> BoneMap)
+{
+	for (int32 BoneIndex = 0; BoneIndex < BoneMap.Num(); BoneIndex++)
+	{
+		EPerceptionNeuronBonesEnum BVHBoneEnum = BoneMap[BoneIndex].BVHBone;
+		FName CustomBoneName = BoneMap[BoneIndex].CustomBoneName;
+		FVector TempTranslation;
+		FRotator TempRotation;
+		if (false == NeuronRead(Controller, Mesh, TempTranslation, TempRotation, AdditionalTranslation[BoneIndex], AdditionalRotation[BoneIndex], BVHBoneEnum, CustomBoneName))
+			return false;
+		Translation.Add(TempTranslation);
+		Rotation.Add(TempRotation);
+	}
+
+	return true;
+}
+
+// Get local bone rotation from mesh
+bool UPerceptionNeuronBPLibrary::NeuronGetLocalBoneRotation(USkeletalMeshComponent *Mesh, FRotator& Rotation, int32 BoneIndex)
+{
+	if (Mesh == nullptr)
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Mesh is invalid.")));
+		}
+		Rotation.Yaw = Rotation.Pitch = Rotation.Roll = 0;
+		return false;
+	}
+
+	if (BoneIndex > Mesh->LocalAtoms.Num())
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("BoneIndex %d exceeds maximum available bones %d."), BoneIndex, Mesh->LocalAtoms.Num()));
+		}
+		Rotation.Yaw = Rotation.Pitch = Rotation.Roll = 0;
+		return false;
+	}
+
+	Rotation = Mesh->LocalAtoms[BoneIndex].Rotator();
+
+	return true;
+}
+
+// Get local bone location from mesh
+bool UPerceptionNeuronBPLibrary::NeuronGetLocalBoneLocation(USkeletalMeshComponent *Mesh, FVector& Location, int32 BoneIndex)
+{
+	if (Mesh == nullptr)
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Mesh is invalid.")));
+		}
+		Location.X = Location.Y = Location.Z = 0;
+		return false;
+	}
+
+	if (BoneIndex > Mesh->LocalAtoms.Num())
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("BoneIndex %d exceeds maximum available bones %d."), BoneIndex, Mesh->LocalAtoms.Num()));
+		}
+		Location.X = Location.Y = Location.Z = 0;
+		return false;
+	}
+
+	Location = Mesh->LocalAtoms[BoneIndex].GetLocation();
+
+	return true;
+}
+
+bool UPerceptionNeuronBPLibrary::NeuronGetReferencePoseLocalBoneRotation(USkeletalMeshComponent *Mesh, FRotator& Rotation, int32 BoneIndex)
+{
+	if (Mesh == nullptr && Mesh->SkeletalMesh == nullptr)
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Mesh is invalid.")));
+		}
+		Rotation.Yaw = Rotation.Pitch = Rotation.Roll = 0;
+		return false;
+	}
+
+	if (BoneIndex > Mesh->LocalAtoms.Num())
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("BoneIndex %d exceeds maximum available bones %d."), BoneIndex, Mesh->LocalAtoms.Num()));
+		}
+		Rotation.Yaw = Rotation.Pitch = Rotation.Roll = 0;
+		return false;
+	}
+
+	const FReferenceSkeleton& refskel(Mesh->SkeletalMesh->RefSkeleton);
+	FQuat Quat = refskel.GetRefBonePose()[BoneIndex].GetRotation();
+	Rotation = Quat.Rotator();
+
+	return true;
+}
+
+// Negate Yaw, Pitch and Roll in rotation vector
+FRotator UPerceptionNeuronBPLibrary::NeuronNegateRotation(FRotator Rotation)
+{
+	FRotator NewRotation;
+	NewRotation.Yaw = -Rotation.Yaw;
+	NewRotation.Pitch = -Rotation.Pitch;
+	NewRotation.Roll = -Rotation.Roll;
+
+	return NewRotation;
+}
+
+// Return BVH Bone Index
+int32 UPerceptionNeuronBPLibrary::NeuronGetBVHBoneIndex(EPerceptionNeuronBonesEnum BVHBone)
+{
+	return (int32)BVHBone;
+}
+
+
+
+
+//
+// Deprecated functions (Do not use in new projects)
+//
+
+// Read motion data from Axis Neuron
+// Deprecated
+bool UPerceptionNeuronBPLibrary::NeuronReadMotion(APerceptionNeuronController *Controller, FVector& Translation, FRotator& Rotation, FVector AdditionalTranslation, FRotator AdditionalRotation, int32 BoneIndex, ENeuronSkeletonEnum SkeletonType)
+{
+	if (Controller == nullptr)
+	{
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Controller is invalid.")));
+		}
+		Rotation.Yaw = Rotation.Pitch = Rotation.Roll = 0;
+		Translation.X = Translation.Y = Translation.Z = 0;
+		return false;
+	}
+	else if ((Controller->bConnected == false) && (Controller->bPlay == false))
+	{
+		Rotation.Yaw = Rotation.Pitch = Rotation.Roll = 0;
+		Translation.X = Translation.Y = Translation.Z = 0;
+		return false;
 	}
 	else if (BoneIndex >= Controller->Skeleton.BoneNr)
 	{
@@ -192,20 +438,18 @@ bool UPerceptionNeuronBPLibrary::NeuronReadMotion(APerceptionNeuronController *C
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Boneindex %d exceeds maximum available bones %d."), BoneIndex, Controller->Skeleton.BoneNr));
 		}
-		bExit = true;
+		Rotation.Yaw = Rotation.Pitch = Rotation.Roll = 0;
+		Translation.X = Translation.Y = Translation.Z = 0;
+		return false;
 	}
 
+	int32 FloatsPerBone = 6; // 3 for x,y,z translation and 3 for x,y,z rotation
 	if (Controller->bDisplacement == false)
 	{
 		FloatsPerBone = 3;	// If there is no displacement (translation) info we have only 3 floats for rotation left
 	}
 
 	if ((BoneIndex * FloatsPerBone) > Controller->FloatCount)
-	{
-		bExit = true;
-	}
-
-	if (bExit == true)
 	{
 		Rotation.Yaw = Rotation.Pitch = Rotation.Roll = 0;
 		Translation.X = Translation.Y = Translation.Z = 0;
@@ -290,9 +534,9 @@ bool UPerceptionNeuronBPLibrary::NeuronReadMotion(APerceptionNeuronController *C
 	}
 
 	// Add additional translation
-	Translation.X += AddTranslation.X;
-	Translation.Y += AddTranslation.Y;
-	Translation.Z += AddTranslation.Z;
+	Translation.X += AdditionalTranslation.X;
+	Translation.Y += AdditionalTranslation.Y;
+	Translation.Z += AdditionalTranslation.Z;
 	
 
 
@@ -424,15 +668,33 @@ bool UPerceptionNeuronBPLibrary::NeuronReadMotion(APerceptionNeuronController *C
 	Rotation = Quat.Rotator();
 
 	// Add additional rotation
-	Rotation.Yaw += AddRotation.Yaw;
-	Rotation.Pitch += AddRotation.Pitch;
-	Rotation.Roll += AddRotation.Roll;
+	Rotation.Yaw += AdditionalRotation.Yaw;
+	Rotation.Pitch += AdditionalRotation.Pitch;
+	Rotation.Roll += AdditionalRotation.Roll;
 	Rotation.Normalize();
 
 	return true;
 }
 
+// Read motion as array
+// Deprecated
+bool UPerceptionNeuronBPLibrary::NeuronReadMotionArray(APerceptionNeuronController *Controller, TArray<FVector> &Translation, TArray<FRotator> &Rotation, TArray<FVector> AdditionalTranslation, TArray<FRotator> AdditionalRotation, int32 MaxBones, ENeuronSkeletonEnum SkeletonType)
+{
+	for (int32 BoneIndex = 0; BoneIndex < MaxBones; BoneIndex++)
+	{
+		FVector TempTranslation;
+		FRotator TempRotation;
+		if (false == NeuronReadMotion(Controller, TempTranslation, TempRotation, AdditionalTranslation[BoneIndex], AdditionalRotation[BoneIndex], BoneIndex, SkeletonType))
+			return false;
+		Translation.Add(TempTranslation);
+		Rotation.Add(TempRotation);
+	}
+
+	return true;
+}
+
 // Map a bone coordinate system
+// Deprecated
 bool UPerceptionNeuronBPLibrary::NeuronBoneMap(APerceptionNeuronController *Controller, int32 BoneIndex, ENeuronXYZEnum X, ENeuronXYZEnum Y, ENeuronXYZEnum Z)
 {
 	if (Controller == nullptr)
@@ -466,71 +728,4 @@ bool UPerceptionNeuronBPLibrary::NeuronBoneMap(APerceptionNeuronController *Cont
 	Controller->Bonemap[BoneIndex].Sign[2] = ZZ > 2 ? -1 : 1;
 
 	return true;
-}
-
-// Get local bone rotation from mesh
-bool UPerceptionNeuronBPLibrary::NeuronGetLocalBoneRotation(USkeletalMeshComponent *Mesh, FRotator& Rotation, int32 BoneIndex)
-{
-	if (Mesh == nullptr)
-	{
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Mesh is invalid.")));
-		}
-		Rotation.Yaw = Rotation.Pitch = Rotation.Roll = 0;
-		return false;
-	}
-
-	if (BoneIndex > Mesh->LocalAtoms.Num())
-	{
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("BoneIndex %d exceeds maximum available bones %d."), BoneIndex, Mesh->LocalAtoms.Num()));
-		}
-		Rotation.Yaw = Rotation.Pitch = Rotation.Roll = 0;
-		return false;
-	}
-
-	Rotation = Mesh->LocalAtoms[BoneIndex].Rotator();
-
-	return true;
-}
-
-// Get local bone location from mesh
-bool UPerceptionNeuronBPLibrary::NeuronGetLocalBoneLocation(USkeletalMeshComponent *Mesh, FVector& Location, int32 BoneIndex)
-{
-	if (Mesh == nullptr)
-	{
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Mesh is invalid.")));
-		}
-		Location.X = Location.Y = Location.Z = 0;
-		return false;
-	}
-
-	if (BoneIndex > Mesh->LocalAtoms.Num())
-	{
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("BoneIndex %d exceeds maximum available bones %d."), BoneIndex, Mesh->LocalAtoms.Num()));
-		}
-		Location.X = Location.Y = Location.Z = 0;
-		return false;
-	}
-
-	Location = Mesh->LocalAtoms[BoneIndex].GetLocation();
-
-	return true;
-}
-
-// Negate Yaw, Pitch and Roll in rotation vector
-FRotator UPerceptionNeuronBPLibrary::NeuronNegateRotation(FRotator Rotation)
-{
-	FRotator NewRotation;
-	NewRotation.Yaw = -Rotation.Yaw;
-	NewRotation.Pitch = -Rotation.Pitch;
-	NewRotation.Roll = -Rotation.Roll;
-
-	return NewRotation;
 }

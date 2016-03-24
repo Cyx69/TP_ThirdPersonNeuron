@@ -33,6 +33,8 @@
 *	https://wiki.unrealengine.com/Custom_Blueprint_Node_Creation
 */
 
+
+// Deprecated
 UENUM(BlueprintType)
 enum class ENeuronSkeletonEnum : uint8
 {
@@ -84,6 +86,81 @@ enum class ENeuronChannelNumberEnum : uint8
 	VE_5	 		UMETA(DisplayName = "5")
 };
 
+// Bones delivered in the Perception Neuron live stream
+UENUM(BlueprintType)
+enum class EPerceptionNeuronBonesEnum : uint8
+{
+	VE_Hips				UMETA(DisplayName = "Hips"),
+	VE_RightUpLeg		UMETA(DisplayName = "RightUpLeg"),
+	VE_RightLeg			UMETA(DisplayName = "RightLeg"),
+	VE_RightFoot		UMETA(DisplayName = "RightFoot"),
+	VE_LeftUpLeg		UMETA(DisplayName = "LeftUpLeg"),
+	VE_LeftLeg			UMETA(DisplayName = "LeftLeg"),
+	VE_LeftFoot			UMETA(DisplayName = "LeftFoot"),
+	VE_Spine			UMETA(DisplayName = "Spine"),
+	VE_Spine1			UMETA(DisplayName = "Spine1"),
+	VE_Spine2			UMETA(DisplayName = "Spine2"),
+	VE_Spine3			UMETA(DisplayName = "Spine3"),
+	VE_Neck				UMETA(DisplayName = "Neck"),
+	VE_Head				UMETA(DisplayName = "Head"),
+	VE_RightShoulder	UMETA(DisplayName = "RightShoulder"),
+	VE_RightArm			UMETA(DisplayName = "RightArm"),
+	VE_RightForeArm		UMETA(DisplayName = "RightForeArm"),
+	VE_RightHand		UMETA(DisplayName = "RightHand"),
+	VE_RightHandThumb1	UMETA(DisplayName = "RightHandThumb1"),
+	VE_RightHandThumb2	UMETA(DisplayName = "RightHandThumb2"),
+	VE_RightHandThumb3	UMETA(DisplayName = "RightHandThumb3"),
+	VE_RightInHandIndex UMETA(DisplayName = "RightInHandIndex"),
+	VE_RightHandIndex1	UMETA(DisplayName = "RightHandIndex1"),
+	VE_RightHandIndex2	UMETA(DisplayName = "RightHandIndex2"),
+	VE_RightHandIndex3	UMETA(DisplayName = "RightHandIndex3"),
+	VE_RightInHandMiddle UMETA(DisplayName = "RightInHandMiddle"),
+	VE_RightHandMiddle1 UMETA(DisplayName = "RightHandMiddle1"),
+	VE_RightHandMiddle2 UMETA(DisplayName = "RightHandMiddle2"),
+	VE_RightHandMiddle3 UMETA(DisplayName = "RightHandMiddle3"),
+	VE_RightInHandRing	UMETA(DisplayName = "RightInHandRing"),
+	VE_RightHandRing1	UMETA(DisplayName = "RightHandRing1"),
+	VE_RightHandRing2	UMETA(DisplayName = "RightHandRing2"),
+	VE_RightHandRing3	UMETA(DisplayName = "RightHandRing3"),
+	VE_RightInHandPinky UMETA(DisplayName = "RightInHandPinky"),
+	VE_RightHandPinky1	UMETA(DisplayName = "RightHandPinky1"),
+	VE_RightHandPinky2	UMETA(DisplayName = "RightHandPinky2"),
+	VE_RightHandPinky3	UMETA(DisplayName = "RightHandPinky3"),
+	VE_LeftShoulder		UMETA(DisplayName = "LeftShoulder"),
+	VE_LeftArm			UMETA(DisplayName = "LeftArm"),
+	VE_LeftForeArm		UMETA(DisplayName = "LeftForeArm"),
+	VE_LeftHand			UMETA(DisplayName = "LeftHand"),
+	VE_LeftHandThumb1	UMETA(DisplayName = "LeftHandThumb1"),
+	VE_LeftHandThumb2	UMETA(DisplayName = "LeftHandThumb2"),
+	VE_LeftHandThumb3	UMETA(DisplayName = "LeftHandThumb3"),
+	VE_LeftInHandIndex	UMETA(DisplayName = "LeftInHandIndex"),
+	VE_LeftHandIndex1	UMETA(DisplayName = "LeftHandIndex1"),
+	VE_LeftHandIndex2	UMETA(DisplayName = "LeftHandIndex2"),
+	VE_LeftHandIndex3	UMETA(DisplayName = "LeftHandIndex3"),
+	VE_LeftInHandMiddle UMETA(DisplayName = "LeftInHandMiddle"),
+	VE_LeftHandMiddle1	UMETA(DisplayName = "LeftHandMiddle1"),
+	VE_LeftHandMiddle2	UMETA(DisplayName = "LeftHandMiddle2"),
+	VE_LeftHandMiddle3	UMETA(DisplayName = "LeftHandMiddle3"),
+	VE_LeftInHandRing	UMETA(DisplayName = "LeftInHandRing"),
+	VE_LeftHandRing1	UMETA(DisplayName = "LeftHandRing1"),
+	VE_LeftHandRing2	UMETA(DisplayName = "LeftHandRing2"),
+	VE_LeftHandRing3	UMETA(DisplayName = "LeftHandRing3"),
+	VE_LeftInHandPinky	UMETA(DisplayName = "LeftInHandPinky"),
+	VE_LeftHandPinky1	UMETA(DisplayName = "LeftHandPinky1"),
+	VE_LeftHandPinky2	UMETA(DisplayName = "LeftHandPinky2"),
+	VE_LeftHandPinky3	UMETA(DisplayName = "LeftHandPinky3")
+};
+
+USTRUCT(BlueprintType)
+struct FPerceptionNeuronBoneMapStruct
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Perception Neuron")
+	EPerceptionNeuronBonesEnum BVHBone = EPerceptionNeuronBonesEnum::VE_Hips;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Perception Neuron")
+	FName CustomBoneName = FName(TEXT("None"));
+};
 
 UCLASS()
 class UPerceptionNeuronBPLibrary : public UBlueprintFunctionLibrary
@@ -112,19 +189,30 @@ class UPerceptionNeuronBPLibrary : public UBlueprintFunctionLibrary
 	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Rewind BVH File Player", ToolTip = "Rewind BVH file player."))
 		static bool NeuronRewind(APerceptionNeuronController *Controller);
 
-	// Read motion function
-	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Read Neuron Motion", ToolTip = "Read incoming motion data for one bone."))
-		static bool NeuronReadMotion(APerceptionNeuronController *Controller, FVector& Translation, FRotator& Rotation, FVector AdditionalTranslation, FRotator AdditionalRotation, int32 BoneIndex = 0, ENeuronSkeletonEnum skeletontype = ENeuronSkeletonEnum::VE_Neuron);
-
-	// Map bone coordinates function
-	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Map Bone Coordinates", ToolTip = "Map bone coordinate system manually."))
-		static bool NeuronBoneMap(APerceptionNeuronController *Controller, int32 BoneIndex, ENeuronXYZEnum X = ENeuronXYZEnum::VE_X, ENeuronXYZEnum Y = ENeuronXYZEnum::VE_Y, ENeuronXYZEnum Z = ENeuronXYZEnum::VE_Z);
+	// Read motion functions
+	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Read Neuron Motion", ToolTip = "Read incoming motion data for all bones."))
+		static bool NeuronRead(APerceptionNeuronController *Controller, USkeletalMeshComponent *Mesh, FVector& Translation, FRotator& Rotation, FVector AdditionalTranslation, FRotator AdditionalRotation, EPerceptionNeuronBonesEnum BVHBone = EPerceptionNeuronBonesEnum::VE_Hips, FName CustomBoneName = FName(TEXT("None")));
+	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Read Neuron Motion Array", ToolTip = "Read incoming motion data for all bones."))
+		static bool NeuronReadArray(APerceptionNeuronController *Controller, USkeletalMeshComponent *Mesh, TArray<FVector> &Translation, TArray<FRotator> &Rotation, TArray<FVector> AdditionalTranslation, TArray<FRotator> AdditionalRotation, TArray<FPerceptionNeuronBoneMapStruct> BoneMap);
 
 	// Additional tools
 	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Get Local Bone Rotation", ToolTip = "Get local bone rotation from mesh."))
 		static bool NeuronGetLocalBoneRotation(USkeletalMeshComponent *Mesh, FRotator& Rotation, int32 BoneIndex = 0);
-	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Get Local Bone Location", Keywords = "Get local bone location from mesh"))
+	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Get Local Bone Location", Keywords = "Get local bone location from mesh."))
 		static bool NeuronGetLocalBoneLocation(USkeletalMeshComponent *Mesh, FVector& Location, int32 BoneIndex = 0);
+	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Get Refpose Local Bone Rotation", Keywords = "Get local bone rotation from reference pose."))
+		static bool NeuronGetReferencePoseLocalBoneRotation(USkeletalMeshComponent *Mesh, FRotator& Rotation, int32 BoneIndex = 0);
 	UFUNCTION(BlueprintPure, Category = "Perception Neuron", meta = (DisplayName = "Negate Rotation", CompactNodeTitle = "Neg", ToolTip = "Negate Yaw, Pitch and Roll in rotation vector."))
 		static FRotator NeuronNegateRotation(FRotator Rotation);
+	UFUNCTION(BlueprintPure, Category = "Perception Neuron", meta = (DisplayName = "Get BVH Bone Index", CompactNodeTitle = "Index", ToolTip = "Return BVH Bone Index from Enum."))
+		static int32 NeuronGetBVHBoneIndex(EPerceptionNeuronBonesEnum BVHBone = EPerceptionNeuronBonesEnum::VE_Hips);
+
+
+	// Deprecated (Do not use in new projects)
+	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Read Neuron Motion (Deprecated)", ToolTip = "Read incoming motion data for one bone (Deprecated)."))
+		static bool NeuronReadMotion(APerceptionNeuronController *Controller, FVector& Translation, FRotator& Rotation, FVector AdditionalTranslation, FRotator AdditionalRotation, int32 BoneIndex = 0, ENeuronSkeletonEnum SkeletonType = ENeuronSkeletonEnum::VE_Neuron);
+	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Read Neuron Motion Array (Deprecated)", ToolTip = "Read incoming motion data for all bones."))
+		static bool NeuronReadMotionArray(APerceptionNeuronController *Controller, TArray<FVector>& Translation, TArray<FRotator>& Rotation, TArray<FVector> AdditionalTranslation, TArray<FRotator> AdditionalRotation, int32 MaxBones = 0, ENeuronSkeletonEnum SkeletonType = ENeuronSkeletonEnum::VE_Neuron);
+	UFUNCTION(BlueprintCallable, Category = "Perception Neuron", meta = (DisplayName = "Map Bone Coordinates", ToolTip = "Map bone coordinate system manually (Deprecated)."))
+		static bool NeuronBoneMap(APerceptionNeuronController *Controller, int32 BoneIndex, ENeuronXYZEnum X = ENeuronXYZEnum::VE_X, ENeuronXYZEnum Y = ENeuronXYZEnum::VE_Y, ENeuronXYZEnum Z = ENeuronXYZEnum::VE_Z);
 };
