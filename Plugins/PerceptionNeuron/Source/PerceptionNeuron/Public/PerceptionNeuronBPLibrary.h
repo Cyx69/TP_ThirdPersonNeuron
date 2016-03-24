@@ -12,6 +12,7 @@
 // 
 #pragma once
 #include "Engine.h"
+#include "PerceptionNeuronController.h"
 #include "PerceptionNeuronBPLibrary.generated.h"
 
 /* 

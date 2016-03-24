@@ -58,7 +58,7 @@ public:
 
 
 	bool bConnected = false;		// Connection to BVH server established?
-	bool bReference = false;		// BVH server sends a reference bone
+	bool bReference = false;		// BVH server sends a reference (root) bone
 	bool bDisplacement = true;		// BVH server sends displacement (translation) infos
 	MotionLineFormatEnum MotionLineFormat = Neuron;	// Which motion line format is used by the BVH server?
 

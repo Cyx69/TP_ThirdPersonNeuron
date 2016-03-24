@@ -12,20 +12,19 @@
 // 
 #include "PerceptionNeuronPrivatePCH.h"
 #include "PerceptionNeuronBPLibrary.h"
-#include "PerceptionNeuronController.h"
 #include "PerceptionNeuronMath.h"
 
 
 UPerceptionNeuronBPLibrary::UPerceptionNeuronBPLibrary(const FObjectInitializer& ObjectInitializer) 
 : Super(ObjectInitializer)
 {
-
+	// Nothing todo
 }
 
 // Init with file and read BVH reference skeleton
 bool UPerceptionNeuronBPLibrary::NeuronInitFile(APerceptionNeuronController *Controller, FString BVHFileName)
 {
-	if (Controller == NULL)
+	if (Controller == nullptr)
 	{
 		if (GEngine)
 		{
@@ -43,7 +42,7 @@ bool UPerceptionNeuronBPLibrary::NeuronInitFile(APerceptionNeuronController *Con
 // Init and configure BVH reference skeleton
 bool UPerceptionNeuronBPLibrary::NeuronInit(APerceptionNeuronController *Controller, int32 BoneNr, ENeuronRotOrderEnum RotationOrder, ENeuronChannelNumberEnum XPos, ENeuronChannelNumberEnum YPos, ENeuronChannelNumberEnum ZPos, ENeuronChannelNumberEnum XRot, ENeuronChannelNumberEnum YRot, ENeuronChannelNumberEnum ZRot)
 {
-	if (Controller == NULL)
+	if (Controller == nullptr)
 	{
 		if (GEngine)
 		{
@@ -60,7 +59,7 @@ bool UPerceptionNeuronBPLibrary::NeuronInit(APerceptionNeuronController *Control
 // Init and configure BVH reference skeleton
 bool UPerceptionNeuronBPLibrary::NeuronBoneSetOffset(APerceptionNeuronController *Controller, int32 BoneIndex, float X, float Y, float Z)
 {
-	if (Controller == NULL)
+	if (Controller == nullptr)
 	{
 		if (GEngine)
 		{
@@ -75,7 +74,7 @@ bool UPerceptionNeuronBPLibrary::NeuronBoneSetOffset(APerceptionNeuronController
 // Connect to Axis Neuron
 bool UPerceptionNeuronBPLibrary::NeuronConnect(APerceptionNeuronController *Controller, FString HostName, int32 Port, bool bReference, bool bDisplacement, ENeuronMotionLineFormatEnum MotionLineFormat)
 {
-	if (Controller == NULL)
+	if (Controller == nullptr)
 	{
 		if (GEngine)
 		{
@@ -100,7 +99,7 @@ bool UPerceptionNeuronBPLibrary::NeuronConnect(APerceptionNeuronController *Cont
 // Disconnect from Axis Neuron
 bool UPerceptionNeuronBPLibrary::NeuronDisconnect(APerceptionNeuronController *Controller)
 {
-	if (Controller == NULL)
+	if (Controller == nullptr)
 	{
 		if (GEngine)
 		{
@@ -117,7 +116,7 @@ bool UPerceptionNeuronBPLibrary::NeuronDisconnect(APerceptionNeuronController *C
 // Play BVH file
 bool UPerceptionNeuronBPLibrary::NeuronPlay(APerceptionNeuronController *Controller, FString BVHFileName, bool bEndless, bool bReference, bool bDisplacement, ENeuronMotionLineFormatEnum MotionLineFormat)
 {
-	if (Controller == NULL)
+	if (Controller == nullptr)
 	{
 		if (GEngine)
 		{
@@ -142,7 +141,7 @@ bool UPerceptionNeuronBPLibrary::NeuronPlay(APerceptionNeuronController *Control
 // Pause playing BVH file
 bool UPerceptionNeuronBPLibrary::NeuronPause(APerceptionNeuronController *Controller, bool bPause)
 {
-	if (Controller == NULL)
+	if (Controller == nullptr)
 	{
 		if (GEngine)
 		{
@@ -157,7 +156,7 @@ bool UPerceptionNeuronBPLibrary::NeuronPause(APerceptionNeuronController *Contro
 // Rewind BVH file player
 bool UPerceptionNeuronBPLibrary::NeuronRewind(APerceptionNeuronController *Controller)
 {
-	if (Controller == NULL)
+	if (Controller == nullptr)
 	{
 		if (GEngine)
 		{
@@ -175,7 +174,7 @@ bool UPerceptionNeuronBPLibrary::NeuronReadMotion(APerceptionNeuronController *C
 	bool bExit = false;
 	int32 FloatsPerBone = 6; // 3 for x,y,z translation and 3 for x,y,z rotation
 
-	if (Controller == NULL)
+	if (Controller == nullptr)
 	{
 		if (GEngine)
 		{
@@ -436,7 +435,7 @@ bool UPerceptionNeuronBPLibrary::NeuronReadMotion(APerceptionNeuronController *C
 // Map a bone coordinate system
 bool UPerceptionNeuronBPLibrary::NeuronBoneMap(APerceptionNeuronController *Controller, int32 BoneIndex, ENeuronXYZEnum X, ENeuronXYZEnum Y, ENeuronXYZEnum Z)
 {
-	if (Controller == NULL)
+	if (Controller == nullptr)
 	{
 		if (GEngine)
 		{
@@ -472,7 +471,7 @@ bool UPerceptionNeuronBPLibrary::NeuronBoneMap(APerceptionNeuronController *Cont
 // Get local bone rotation from mesh
 bool UPerceptionNeuronBPLibrary::NeuronGetLocalBoneRotation(USkeletalMeshComponent *Mesh, FRotator& Rotation, int32 BoneIndex)
 {
-	if (Mesh == NULL)
+	if (Mesh == nullptr)
 	{
 		if (GEngine)
 		{
@@ -500,7 +499,7 @@ bool UPerceptionNeuronBPLibrary::NeuronGetLocalBoneRotation(USkeletalMeshCompone
 // Get local bone location from mesh
 bool UPerceptionNeuronBPLibrary::NeuronGetLocalBoneLocation(USkeletalMeshComponent *Mesh, FVector& Location, int32 BoneIndex)
 {
-	if (Mesh == NULL)
+	if (Mesh == nullptr)
 	{
 		if (GEngine)
 		{
