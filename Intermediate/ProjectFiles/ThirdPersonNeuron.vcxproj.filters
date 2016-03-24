@@ -4,7 +4,7 @@
 	<ItemGroup>
 		<None Include="..\..\ThirdPersonNeuron.uproject" />
 		<Filter Include="Source">
-			<UniqueIdentifier>{C6FA5A43-DD83-47F8-9C06-48B86FED365A}</UniqueIdentifier>
+			<UniqueIdentifier>{38BC4B3A-35F6-4FB1-8C55-6D748C592DF8}</UniqueIdentifier>
 		</Filter>
 		<None Include="..\..\Source\ThirdPersonNeuron.Target.cs">
 			<Filter>Source</Filter>
@@ -13,7 +13,7 @@
 			<Filter>Source</Filter>
 		</None >
 		<Filter Include="Config">
-			<UniqueIdentifier>{14DFC4D3-D3A4-47BF-86BE-0A80CCA32C16}</UniqueIdentifier>
+			<UniqueIdentifier>{8E1D9164-F69C-469D-B110-8436E05749A3}</UniqueIdentifier>
 		</Filter>
 		<None Include="..\..\Config\DefaultEditor.ini">
 			<Filter>Config</Filter>
@@ -34,22 +34,22 @@
 			<Filter>Config</Filter>
 		</None >
 		<Filter Include="Plugins">
-			<UniqueIdentifier>{B6D5CBCD-4B71-4F42-8CF9-0374BDB9F5F8}</UniqueIdentifier>
+			<UniqueIdentifier>{DD11F284-9C49-4DE2-8557-9B3328EBCF92}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="Plugins\PerceptionNeuron">
-			<UniqueIdentifier>{9BE22C94-240E-448D-AB94-1B7713E42109}</UniqueIdentifier>
+			<UniqueIdentifier>{7E99EA3F-42D0-4551-907F-9F381502EE5A}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="Plugins\PerceptionNeuron\Source">
-			<UniqueIdentifier>{3511319B-C495-4736-B3CC-26AFE9B5AFCF}</UniqueIdentifier>
+			<UniqueIdentifier>{20B21DF5-9639-4236-AAF7-360A32E72EB4}</UniqueIdentifier>
 		</Filter>
 		<Filter Include="Plugins\PerceptionNeuron\Source\PerceptionNeuron">
-			<UniqueIdentifier>{36D7CEBC-20A1-4DD7-8CB6-BD4C4FCA7990}</UniqueIdentifier>
+			<UniqueIdentifier>{F3C76013-3277-49CE-8007-7C3C7C76A67B}</UniqueIdentifier>
 		</Filter>
 		<None Include="..\..\Plugins\PerceptionNeuron\Source\PerceptionNeuron\PerceptionNeuron.Build.cs">
 			<Filter>Plugins\PerceptionNeuron\Source\PerceptionNeuron</Filter>
 		</None >
 		<Filter Include="Plugins\PerceptionNeuron\Source\PerceptionNeuron\Private">
-			<UniqueIdentifier>{5356E71B-14AB-4373-8415-78B90C9F2894}</UniqueIdentifier>
+			<UniqueIdentifier>{A352E12A-2F68-4BB5-A033-537AE8971148}</UniqueIdentifier>
 		</Filter>
 		<ClCompile Include="..\..\Plugins\PerceptionNeuron\Source\PerceptionNeuron\Private\PerceptionNeuron.cpp">
 			<Filter>Plugins\PerceptionNeuron\Source\PerceptionNeuron\Private</Filter>
@@ -67,7 +67,7 @@
 			<Filter>Plugins\PerceptionNeuron\Source\PerceptionNeuron\Private</Filter>
 		</ClInclude >
 		<Filter Include="Plugins\PerceptionNeuron\Source\PerceptionNeuron\Public">
-			<UniqueIdentifier>{34619C6D-B106-4B5D-81A2-90EDD43CFB67}</UniqueIdentifier>
+			<UniqueIdentifier>{9953D3F4-DFB5-4EE0-8451-149E4B5725FE}</UniqueIdentifier>
 		</Filter>
 		<ClInclude Include="..\..\Plugins\PerceptionNeuron\Source\PerceptionNeuron\Public\PerceptionNeuron.h">
 			<Filter>Plugins\PerceptionNeuron\Source\PerceptionNeuron\Public</Filter>
@@ -88,13 +88,13 @@
 			<Filter>Plugins\PerceptionNeuron</Filter>
 		</None >
 		<Filter Include="Plugins\PerceptionNeuron\Resources">
-			<UniqueIdentifier>{21D7C919-CF85-46AF-88CA-E856D84DD90E}</UniqueIdentifier>
+			<UniqueIdentifier>{22CE836A-2B9A-4586-BEBC-537069678A7E}</UniqueIdentifier>
 		</Filter>
 		<None Include="..\..\Plugins\PerceptionNeuron\Resources\Icon128.png">
 			<Filter>Plugins\PerceptionNeuron\Resources</Filter>
 		</None >
 		<Filter Include="Source\ThirdPersonNeuron">
-			<UniqueIdentifier>{2C420FBF-875E-453E-9E7E-FFD07B2A4701}</UniqueIdentifier>
+			<UniqueIdentifier>{E3D6C8E7-8380-4160-B378-B749F823FC2E}</UniqueIdentifier>
 		</Filter>
 		<None Include="..\..\Source\ThirdPersonNeuron\ThirdPersonNeuron.Build.cs">
 			<Filter>Source\ThirdPersonNeuron</Filter>
