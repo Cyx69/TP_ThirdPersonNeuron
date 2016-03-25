@@ -4,10 +4,10 @@ v0.3.0
 - Add better custom skeleton handling.
   No need to map bone coordinate systems by hand anymore, 
   just map the bone names in anim and event graph.
-- Mark old read functions as deprecated
+- Mark old neuron read functions as deprecated
 - Add BVH player rewind node
-- Add new enum to NeuronReadMotion to get skeleton translation and rotation
-  in world coordinate system (still relative values)
+- NeuronRead functions are now able to read the skeleton translation and rotation
+  in component space
 - Compile pre build libraries with UE4.10
 - Further comments and minor improvements 
 

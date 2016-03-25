@@ -1,8 +1,9 @@
 List of changes:
 ================
 v0.5.0
-- Cleanup of all Animation BP and switch to new NeuronReadArray function.
-- Remove old custom bone mapping functions
+- Cleanup of all Animation BP and switch to new NeuronReadArray function
+  which improves the support of custom skeletons.
+- Remove old custom bone mapping functions (are now deprecated)
 - Add function in Animation BP to remove pelvis drift on ground
 - Change project to UE 4.10
 - Update to Plugin v0.3.0
