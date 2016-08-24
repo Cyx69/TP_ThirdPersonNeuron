@@ -89,7 +89,7 @@ public:
 	// BVH Player
 	//
 public:
-	bool Play(FString BVHFileName, bool bEndless);
+	bool Play(FString BVHFileName, bool bPlayEndless);
 	bool Pause(bool bPause);
 	bool Rewind();
 

@@ -332,17 +332,17 @@ bool UPerceptionNeuronBPLibrary::NeuronGetLocalBoneRotation(USkeletalMeshCompone
 		return false;
 	}
 
-	if (BoneIndex > Mesh->LocalAtoms.Num())
+	if (BoneIndex > Mesh->BoneSpaceTransforms.Num())
 	{
 		if (GEngine)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("BoneIndex %d exceeds maximum available bones %d."), BoneIndex, Mesh->LocalAtoms.Num()));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("BoneIndex %d exceeds maximum available bones %d."), BoneIndex, Mesh->BoneSpaceTransforms.Num()));
 		}
 		Rotation.Yaw = Rotation.Pitch = Rotation.Roll = 0;
 		return false;
 	}
 
-	Rotation = Mesh->LocalAtoms[BoneIndex].Rotator();
+	Rotation = Mesh->BoneSpaceTransforms[BoneIndex].Rotator();
 
 	return true;
 }
@@ -360,17 +360,17 @@ bool UPerceptionNeuronBPLibrary::NeuronGetLocalBoneLocation(USkeletalMeshCompone
 		return false;
 	}
 
-	if (BoneIndex > Mesh->LocalAtoms.Num())
+	if (BoneIndex > Mesh->BoneSpaceTransforms.Num())
 	{
 		if (GEngine)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("BoneIndex %d exceeds maximum available bones %d."), BoneIndex, Mesh->LocalAtoms.Num()));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("BoneIndex %d exceeds maximum available bones %d."), BoneIndex, Mesh->BoneSpaceTransforms.Num()));
 		}
 		Location.X = Location.Y = Location.Z = 0;
 		return false;
 	}
 
-	Location = Mesh->LocalAtoms[BoneIndex].GetLocation();
+	Location = Mesh->BoneSpaceTransforms[BoneIndex].GetLocation();
 
 	return true;
 }
@@ -387,11 +387,11 @@ bool UPerceptionNeuronBPLibrary::NeuronGetReferencePoseLocalBoneRotation(USkelet
 		return false;
 	}
 
-	if (BoneIndex > Mesh->LocalAtoms.Num())
+	if (BoneIndex > Mesh->BoneSpaceTransforms.Num())
 	{
 		if (GEngine)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("BoneIndex %d exceeds maximum available bones %d."), BoneIndex, Mesh->LocalAtoms.Num()));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("BoneIndex %d exceeds maximum available bones %d."), BoneIndex, Mesh->BoneSpaceTransforms.Num()));
 		}
 		Rotation.Yaw = Rotation.Pitch = Rotation.Roll = 0;
 		return false;

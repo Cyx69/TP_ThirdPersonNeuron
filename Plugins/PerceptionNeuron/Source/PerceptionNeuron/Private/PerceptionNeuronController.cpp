@@ -73,13 +73,13 @@ void APerceptionNeuronController::Tick(float DeltaTime)
 
 					if (MotionLinePointer < (MotionLineOffset + Frames))
 					{
-						int32 MotionLine = MotionLinePointer;
-						if (SIZEOFDATA >= PlayerMotionLines[MotionLine].Len() + 1) // Sanity check
+						int32 CurrentMotionLine = MotionLinePointer;
+						if (SIZEOFDATA >= PlayerMotionLines[CurrentMotionLine].Len() + 1) // Sanity check
 						{
 							// Convert string based motion line back to an array of chars to pump the line through the parser (Little bit ugly...)
-							memcpy(Data, TCHAR_TO_ANSI(*PlayerMotionLines[MotionLine]), PlayerMotionLines[MotionLine].Len());
-							Data[PlayerMotionLines[MotionLine].Len()] = '\n';
-							BytesRead = PlayerMotionLines[MotionLine].Len() + 1;
+							memcpy(Data, TCHAR_TO_ANSI(*PlayerMotionLines[CurrentMotionLine]), PlayerMotionLines[CurrentMotionLine].Len());
+							Data[PlayerMotionLines[CurrentMotionLine].Len()] = '\n';
+							BytesRead = PlayerMotionLines[CurrentMotionLine].Len() + 1;
 						}
 						MotionLinePointer++; // Increment line for next time;
 						if ((MotionLinePointer >= (MotionLineOffset + Frames)) && (bEndless == true))
@@ -296,7 +296,7 @@ void APerceptionNeuronController::Disconnect(void)
 }
 
 // BVH Player
-bool APerceptionNeuronController::Play(FString BVHFileName, bool bEndless)
+bool APerceptionNeuronController::Play(FString BVHFileName, bool bPlayEndless)
 {
 	// Set to default
 	bPlayerInitialized = false;
@@ -341,7 +341,7 @@ bool APerceptionNeuronController::Play(FString BVHFileName, bool bEndless)
 				MotionLinePointer = MotionLineOffset;
 				bPlayerInitialized = true;
 				bPlay = true;
-				APerceptionNeuronController::bEndless = bEndless;
+				APerceptionNeuronController::bEndless = bPlayEndless;
 				if (Frames > PlayerMotionLines.Num() - (i + 1))
 					Frames = PlayerMotionLines.Num() - (i + 1);
 				DeltaTimeAdded = FrameTime; // Play motion immediately with next frame
