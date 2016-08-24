@@ -13,7 +13,7 @@
 #include "PerceptionNeuronPrivatePCH.h"
 #include "PerceptionNeuronBPLibrary.h"
 #include "PerceptionNeuronMath.h"
-
+#include "Runtime/Launch/Resources/Version.h"
 
 UPerceptionNeuronBPLibrary::UPerceptionNeuronBPLibrary(const FObjectInitializer& ObjectInitializer) 
 : Super(ObjectInitializer)
@@ -332,17 +332,26 @@ bool UPerceptionNeuronBPLibrary::NeuronGetLocalBoneRotation(USkeletalMeshCompone
 		return false;
 	}
 
-	if (BoneIndex > Mesh->BoneSpaceTransforms.Num())
+#if (ENGINE_MAJOR_VERSION >= 4) && (ENGINE_MINOR_VERSION >= 13)
+	int32 BoneIndexMax = Mesh->BoneSpaceTransforms.Num();
+#else
+	int32 BoneIndexMax = Mesh->LocalAtoms.Num();
+#endif
+	if (BoneIndex > BoneIndexMax)
 	{
 		if (GEngine)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("BoneIndex %d exceeds maximum available bones %d."), BoneIndex, Mesh->BoneSpaceTransforms.Num()));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("BoneIndex %d exceeds maximum available bones %d."), BoneIndex, BoneIndexMax));
 		}
 		Rotation.Yaw = Rotation.Pitch = Rotation.Roll = 0;
 		return false;
 	}
 
+#if (ENGINE_MAJOR_VERSION >= 4) && (ENGINE_MINOR_VERSION >= 13)
 	Rotation = Mesh->BoneSpaceTransforms[BoneIndex].Rotator();
+#else
+	Rotation = Mesh->LocalAtoms[BoneIndex].Rotator();
+#endif
 
 	return true;
 }
@@ -360,18 +369,26 @@ bool UPerceptionNeuronBPLibrary::NeuronGetLocalBoneLocation(USkeletalMeshCompone
 		return false;
 	}
 
-	if (BoneIndex > Mesh->BoneSpaceTransforms.Num())
+#if (ENGINE_MAJOR_VERSION >= 4) && (ENGINE_MINOR_VERSION >= 13)
+	int32 BoneIndexMax = Mesh->BoneSpaceTransforms.Num();
+#else
+	int32 BoneIndexMax = Mesh->LocalAtoms.Num();
+#endif
+	if (BoneIndex > BoneIndexMax)
 	{
 		if (GEngine)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("BoneIndex %d exceeds maximum available bones %d."), BoneIndex, Mesh->BoneSpaceTransforms.Num()));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("BoneIndex %d exceeds maximum available bones %d."), BoneIndex, BoneIndexMax));
 		}
 		Location.X = Location.Y = Location.Z = 0;
 		return false;
 	}
 
+#if (ENGINE_MAJOR_VERSION >= 4) && (ENGINE_MINOR_VERSION >= 13)
 	Location = Mesh->BoneSpaceTransforms[BoneIndex].GetLocation();
-
+#else
+	Location = Mesh->LocalAtoms[BoneIndex].GetLocation();
+#endif
 	return true;
 }
 
@@ -387,11 +404,16 @@ bool UPerceptionNeuronBPLibrary::NeuronGetReferencePoseLocalBoneRotation(USkelet
 		return false;
 	}
 
-	if (BoneIndex > Mesh->BoneSpaceTransforms.Num())
+#if (ENGINE_MAJOR_VERSION >= 4) && (ENGINE_MINOR_VERSION >= 13)
+	int32 BoneIndexMax = Mesh->BoneSpaceTransforms.Num();
+#else
+	int32 BoneIndexMax = Mesh->LocalAtoms.Num();
+#endif
+	if (BoneIndex > BoneIndexMax)
 	{
 		if (GEngine)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("BoneIndex %d exceeds maximum available bones %d."), BoneIndex, Mesh->BoneSpaceTransforms.Num()));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("BoneIndex %d exceeds maximum available bones %d."), BoneIndex, BoneIndexMax));
 		}
 		Rotation.Yaw = Rotation.Pitch = Rotation.Roll = 0;
 		return false;
