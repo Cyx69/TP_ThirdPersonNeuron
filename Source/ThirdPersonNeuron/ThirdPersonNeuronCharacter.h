@@ -1,4 +1,4 @@
-// Copyright 1998-2015 Epic Games, Inc. All Rights Reserved.
+// Copyright 1998-2016 Epic Games, Inc. All Rights Reserved.
 #pragma once
 #include "GameFramework/Character.h"
 #include "ThirdPersonNeuronCharacter.generated.h"
@@ -28,6 +28,9 @@ public:
 
 protected:
 
+	/** Resets HMD orientation in VR. */
+	void OnResetVR();
+
 	/** Called for forwards/backward input */
 	void MoveForward(float Value);
 
@@ -54,7 +57,7 @@ protected:
 
 protected:
 	// APawn interface
-	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// End of APawn interface
 
 public:
