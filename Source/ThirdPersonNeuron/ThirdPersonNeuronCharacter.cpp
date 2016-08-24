@@ -45,30 +45,30 @@ AThirdPersonNeuronCharacter::AThirdPersonNeuronCharacter()
 //////////////////////////////////////////////////////////////////////////
 // Input
 
-void AThirdPersonNeuronCharacter::SetupPlayerInputComponent(class UInputComponent* InputComponent)
+void AThirdPersonNeuronCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	// Set up gameplay key bindings
 	check(PlayerInputComponent);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
-	PlayerInputComponent->BindAxis("MoveForward", this, &AThirdPerson413Character::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &AThirdPerson413Character::MoveRight);
+	PlayerInputComponent->BindAxis("MoveForward", this, &AThirdPersonNeuronCharacter::MoveForward);
+	PlayerInputComponent->BindAxis("MoveRight", this, &AThirdPersonNeuronCharacter::MoveRight);
 
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
 	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("TurnRate", this, &AThirdPerson413Character::TurnAtRate);
+	PlayerInputComponent->BindAxis("TurnRate", this, &AThirdPersonNeuronCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
-	PlayerInputComponent->BindAxis("LookUpRate", this, &AThirdPerson413Character::LookUpAtRate);
+	PlayerInputComponent->BindAxis("LookUpRate", this, &AThirdPersonNeuronCharacter::LookUpAtRate);
 
 	// handle touch devices
-	PlayerInputComponent->BindTouch(IE_Pressed, this, &AThirdPerson413Character::TouchStarted);
-	PlayerInputComponent->BindTouch(IE_Released, this, &AThirdPerson413Character::TouchStopped);
+	PlayerInputComponent->BindTouch(IE_Pressed, this, &AThirdPersonNeuronCharacter::TouchStarted);
+	PlayerInputComponent->BindTouch(IE_Released, this, &AThirdPersonNeuronCharacter::TouchStopped);
 
 	// VR headset functionality
-	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AThirdPerson413Character::OnResetVR);
+	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AThirdPersonNeuronCharacter::OnResetVR);
 }
 
 
