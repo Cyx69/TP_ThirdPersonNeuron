@@ -1,5 +1,8 @@
 List of changes:
 ================
+v0.3.1
+- Compile Fixes for UE4.13
+
 v0.3.0
 - Add better custom skeleton handling.
   No need to map bone coordinate systems by hand anymore, 

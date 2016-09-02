@@ -1,5 +1,8 @@
 List of changes:
 ================
+v0.5.1
+- Compile Fixes for UE4.13
+
 v0.5.0
 - Cleanup of all Animation BP and switch to new NeuronReadArray function
   which improves the support of custom skeletons.
