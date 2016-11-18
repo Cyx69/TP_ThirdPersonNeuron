@@ -1,12 +1,12 @@
 {
 	"FileVersion": 3,
 	"Version": 1,
-	"VersionName": "0.3.1",
+	"VersionName": "0.3.2",
 	"FriendlyName": "PerceptionNeuron",
 	"Description": "Unofficial Plugin for Perception Neuron (TM) motion capture suit.",
 	"Category": "Other",
 	"CreatedBy": "Heiko Fink aka Cyx",
-	"CreatedByURL": "http://blogofcyx.blogspot.de/",
+	"CreatedByURL": "https://www.eofink.de",
 	"DocsURL": "https://github.com/Cyx69/TP_ThirdPersonNeuron",
 	"MarketplaceURL": "",
 	"SupportURL": "https://forums.unrealengine.com/showthread.php?85318-Perception-Neuron-Template&p=384125",
@@ -17,7 +17,7 @@
 			"LoadingPhase": "Default"
 		}
 	],
-	"EnabledByDefault": false,
+	"EnabledByDefault": true,
 	"CanContainContent": false,
 	"IsBetaVersion": false,
 	"Installed": false
