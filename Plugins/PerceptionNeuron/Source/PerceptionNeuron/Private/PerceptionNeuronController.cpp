@@ -257,19 +257,34 @@ bool APerceptionNeuronController::Connect(FString HostName, int32 Port)
 		if (ReceiverSocket == NULL)
 			return false;
 	
-		auto ResolveInfo = SocketSubSystem->GetHostByName(TCHAR_TO_ANSI(*HostName));
-		while (!ResolveInfo->IsComplete());
+		// Is HostName already a valid IPv4 address?		
+		bool bValidAddress = false;
+		uint32 IP = 0;		
+		FIPv4Address IPv4Address;
+		if (true == FIPv4Address::Parse(HostName, IPv4Address))
+		{			
+			IP = IPv4Address.Value;
+			bValidAddress = true;
+		}
+		else
+		{	// Resolve HostName
+			auto ResolveInfo = SocketSubSystem->GetHostByName(TCHAR_TO_ANSI(*HostName));
+			while (!ResolveInfo->IsComplete());
 
-		if (ResolveInfo->GetErrorCode() == 0)
+			if (ResolveInfo->GetErrorCode() == 0)
+			{
+				const FInternetAddr* Addr = &ResolveInfo->GetResolvedAddress();				
+				Addr->GetIp(IP);
+				bValidAddress = true;
+			}
+		}
+
+		// Connect
+		if (bValidAddress)
 		{
-			const FInternetAddr* Addr = &ResolveInfo->GetResolvedAddress();
-			uint32 IP;
-			Addr->GetIp(IP);
-			
 			TSharedRef<FInternetAddr> InetAddr = SocketSubSystem->CreateInternetAddr();
 			InetAddr->SetIp(IP);
 			InetAddr->SetPort(Port);
-
 			bConnected = ReceiverSocket->Connect(*InetAddr);
 		}
 	}
