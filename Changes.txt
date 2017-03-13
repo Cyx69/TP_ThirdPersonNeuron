@@ -1,5 +1,8 @@
 List of changes:
 ================
+v0.5.3
+- Update to Plugin v0.3.3
+
 v0.5.2
 - Plugin Enable Fix for UE4.14
 

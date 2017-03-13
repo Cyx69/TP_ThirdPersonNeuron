@@ -1,5 +1,8 @@
 List of changes:
 ================
+v0.3.3
+- Do not resolve HostName if HostName is already a valid IPv4 address
+
 v0.3.2
 - Plugin Enable Fix for UE4.14
 
