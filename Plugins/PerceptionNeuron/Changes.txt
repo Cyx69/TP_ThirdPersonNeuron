@@ -1,5 +1,8 @@
 List of changes:
 ================
+v0.3.4
+- Remove UE4.16 build warnings
+
 v0.3.3
 - Do not resolve HostName if HostName is already a valid IPv4 address
 

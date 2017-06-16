@@ -3,7 +3,7 @@
                             UE4 Perception Neuron Plugin
                             ============================
 					
-                                      v0.3.3
+                                      v0.3.4
                            
                           Created by Heiko Fink aka Cyx
                                            

@@ -1,5 +1,8 @@
 List of changes:
 ================
+v0.5.4
+- Remove UE4.16 build warnings
+
 v0.5.3
 - Update to Plugin v0.3.3
 
