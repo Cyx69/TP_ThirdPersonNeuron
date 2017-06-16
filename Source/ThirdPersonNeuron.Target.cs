@@ -5,21 +5,9 @@ using System.Collections.Generic;
 
 public class ThirdPersonNeuronTarget : TargetRules
 {
-	public ThirdPersonNeuronTarget(TargetInfo Target)
+	public ThirdPersonNeuronTarget(TargetInfo Target): base (Target)
 	{
 		Type = TargetType.Game;
-	}
-
-	//
-	// TargetRules interface.
-	//
-
-	public override void SetupBinaries(
-		TargetInfo Target,
-		ref List<UEBuildBinaryConfiguration> OutBuildBinaryConfigurations,
-		ref List<string> OutExtraModuleNames
-		)
-	{
-		OutExtraModuleNames.Add("ThirdPersonNeuron");
+        ExtraModuleNames.Add("ThirdPersonNeuron");
 	}
 }

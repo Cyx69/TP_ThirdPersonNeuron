@@ -4,7 +4,7 @@ using UnrealBuildTool;
 
 public class ThirdPersonNeuron : ModuleRules
 {
-	public ThirdPersonNeuron(TargetInfo Target)
+	public ThirdPersonNeuron(ReadOnlyTargetRules Target) : base (Target)
 	{
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay" });
 	}

@@ -15,7 +15,7 @@ using UnrealBuildTool;
 
 public class PerceptionNeuron : ModuleRules
 {
-	public PerceptionNeuron(TargetInfo Target)
+    public PerceptionNeuron(ReadOnlyTargetRules Target) : base (Target)
 	{
 		
 		PublicIncludePaths.AddRange(
